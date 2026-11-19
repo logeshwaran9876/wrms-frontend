@@ -333,15 +333,15 @@ function EmployeeDetailsModal({
     >
       <div className="space-y-4">
         {/* Employee Profile Section */}
-        <div className="rounded-lg border border-slate-200 bg-slate-50/50 p-4 dark:border-slate-800 dark:bg-slate-900/40">
-          <div className="flex items-center justify-between border-b border-slate-200/80 pb-3 dark:border-slate-800">
+        <div className="rounded-xl border border-theme-border bg-theme-surface p-5 shadow-sm">
+          <div className="flex items-center justify-between border-b border-theme-border/60 pb-3.5">
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary-600 text-sm font-semibold text-white">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-theme-border bg-theme-surface-subtle text-theme-heading text-sm font-bold">
                 {user.name.split(' ').map((n) => n[0]).join('').substring(0, 2).toUpperCase()}
               </div>
               <div>
-                <h4 className="font-semibold text-slate-900 dark:text-slate-100">{user.name}</h4>
-                <p className="flex items-center gap-1 text-xs text-slate-400">
+                <h4 className="font-bold text-base text-theme-heading">{user.name}</h4>
+                <p className="flex items-center gap-1.5 text-xs text-theme-muted mt-0.5">
                   <Mail className="h-3 w-3" /> {user.email}
                 </p>
               </div>
@@ -354,36 +354,36 @@ function EmployeeDetailsModal({
             </div>
           </div>
 
-          <div className="mt-3 grid grid-cols-2 gap-3 text-xs sm:grid-cols-3">
+          <div className="mt-3.5 grid grid-cols-2 gap-3.5 text-xs sm:grid-cols-3">
             <div>
-              <span className="text-slate-400">Account ID</span>
-              <p className="mt-0.5 font-mono font-medium text-slate-700 dark:text-slate-200">{user.id}</p>
+              <span className="text-[11px] font-semibold text-theme-muted uppercase tracking-wider">Account ID</span>
+              <p className="mt-1 font-mono font-semibold text-theme-heading">{user.id}</p>
             </div>
             <div>
-              <span className="text-slate-400">Last Login</span>
-              <p className="mt-0.5 font-medium text-slate-700 dark:text-slate-200">
+              <span className="text-[11px] font-semibold text-theme-muted uppercase tracking-wider">Last Login</span>
+              <p className="mt-1 font-semibold text-theme-heading">
                 {user.lastLogin ? timeAgo(user.lastLogin) : 'Never'}
               </p>
             </div>
             <div>
-              <span className="text-slate-400">Member Since</span>
-              <p className="mt-0.5 font-medium text-slate-700 dark:text-slate-200">{formatDate(user.createdAt)}</p>
+              <span className="text-[11px] font-semibold text-theme-muted uppercase tracking-wider">Member Since</span>
+              <p className="mt-1 font-semibold text-theme-heading">{formatDate(user.createdAt)}</p>
             </div>
           </div>
         </div>
 
         {/* Assigned Device Section */}
-        <div className="rounded-lg border border-slate-200 bg-slate-50/50 p-4 dark:border-slate-800 dark:bg-slate-900/40">
-          <div className="flex items-center justify-between border-b border-slate-200/80 pb-3 dark:border-slate-800">
+        <div className="rounded-xl border border-theme-border bg-theme-surface p-5 shadow-sm">
+          <div className="flex items-center justify-between border-b border-theme-border/60 pb-3.5">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-100 text-primary-600 dark:bg-primary-950 dark:text-primary-400">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-theme-border bg-theme-surface-subtle text-theme-heading">
                 <Monitor className="h-5 w-5" />
               </div>
               <div>
-                <h4 className="font-semibold text-slate-900 dark:text-slate-100">
+                <h4 className="font-bold text-base text-theme-heading">
                   {device ? device.name : 'No Workstation Assigned'}
                 </h4>
-                <p className="font-mono text-xs text-slate-400">
+                <p className="font-mono text-xs text-theme-muted">
                   {device ? device.deviceId : 'Register or link a device from Devices tab'}
                 </p>
               </div>
@@ -396,26 +396,26 @@ function EmployeeDetailsModal({
           </div>
 
           {device ? (
-            <div className="mt-3 grid grid-cols-2 gap-3 text-xs sm:grid-cols-4">
+            <div className="mt-3.5 grid grid-cols-2 gap-3.5 text-xs sm:grid-cols-4">
               <div>
-                <span className="text-slate-400">Operating System</span>
-                <p className="mt-0.5 font-medium text-slate-700 dark:text-slate-200">{device.osVersion}</p>
+                <span className="text-[11px] font-semibold text-theme-muted uppercase tracking-wider">Operating System</span>
+                <p className="mt-1 font-semibold text-theme-heading">{device.osVersion}</p>
               </div>
               <div>
-                <span className="text-slate-400">Agent Version</span>
-                <p className="mt-0.5 font-medium text-slate-700 dark:text-slate-200">v{device.agentVersion}</p>
+                <span className="text-[11px] font-semibold text-theme-muted uppercase tracking-wider">Agent Version</span>
+                <p className="mt-1 font-semibold text-theme-heading">v{device.agentVersion}</p>
               </div>
               <div>
-                <span className="text-slate-400">Assigned Policy</span>
-                <p className="mt-0.5 font-medium text-slate-700 dark:text-slate-200">{device.policyName || 'Standard Policy'}</p>
+                <span className="text-[11px] font-semibold text-theme-muted uppercase tracking-wider">Assigned Policy</span>
+                <p className="mt-1 font-semibold text-theme-heading">{device.policyName || 'Standard Enterprise Policy'}</p>
               </div>
               <div>
-                <span className="text-slate-400">Last Sync</span>
-                <p className="mt-0.5 font-medium text-slate-700 dark:text-slate-200">{timeAgo(device.lastSync)}</p>
+                <span className="text-[11px] font-semibold text-theme-muted uppercase tracking-wider">Last Sync</span>
+                <p className="mt-1 font-semibold text-theme-heading">{timeAgo(device.lastSync)}</p>
               </div>
             </div>
           ) : (
-            <div className="mt-3 text-xs text-slate-500">
+            <div className="mt-3 text-xs text-theme-muted leading-relaxed">
               When a device is registered with this employee's name, it will automatically link and display its live status here.
             </div>
           )}

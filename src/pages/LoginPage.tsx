@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation, Navigate } from 'react-router-dom';
-import { Shield, Lock, Mail, Eye, EyeOff, AlertCircle, ArrowRight, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { Shield, Lock, Mail, Eye, EyeOff, AlertCircle, ArrowRight } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
 export default function LoginPage() {
@@ -23,7 +23,7 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim() || !password) {
-      setError('Please enter both email and password.');
+      setError('Please enter both corporate email and password.');
       return;
     }
 
@@ -35,49 +35,40 @@ export default function LoginPage() {
       const from = (location.state as any)?.from?.pathname || (loggedInUser.role === 'employee' ? '/employee-portal' : '/');
       navigate(from, { replace: true });
     } catch (err: any) {
-      setError(err.message || 'Invalid email or password. Please try again.');
+      setError(err.message || 'Invalid credentials. Please verify your email and password.');
     } finally {
       setLoading(false);
     }
   };
 
-  const fillSuperAdmin = () => {
-    setEmail('admin@company.com');
-    setPassword('Admin@12345');
-    setError(null);
-  };
-
-  const fillEmployee = () => {
-    setEmail('logesh@company.local');
-    setPassword('Logesh@12345');
-    setError(null);
-  };
-
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-theme-bg p-4 relative overflow-hidden font-sans text-theme-heading">
-      <div className="w-full max-w-md relative z-10">
+    <div className="min-h-screen w-full flex items-center justify-center bg-theme-bg p-4 relative overflow-hidden font-sans text-theme-heading select-none">
+      {/* Background Ambient Aura */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-theme-accent/5 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="w-full max-w-md relative z-10 animate-fade-in">
         {/* Brand Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-theme-accent text-theme-accent-text font-bold mb-4 shadow-sm">
-            <Shield className="h-7 w-7" />
+          <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl border border-theme-border bg-theme-surface shadow-xl text-theme-heading mb-4">
+            <Shield className="h-7 w-7 text-theme-heading" />
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-theme-heading">WRMS Console</h1>
-          <p className="text-xs text-theme-muted mt-1">
-            Windows Restriction Management System · Security Portal
+          <p className="text-xs text-theme-muted mt-1.5 font-medium tracking-wide">
+            Windows Restriction & Endpoint Policy Management
           </p>
         </div>
 
-        {/* Solid Card - Zero Glass */}
+        {/* Solid Theme Card */}
         <div className="rounded-2xl border border-theme-border bg-theme-surface p-8 shadow-2xl">
           <div className="mb-6">
             <h2 className="text-lg font-semibold text-theme-heading">Sign In</h2>
-            <p className="text-xs text-theme-muted mt-0.5">
-              Enter your credentials to manage endpoint policies and workstations.
+            <p className="text-xs text-theme-muted mt-1 leading-relaxed">
+              Enter your corporate credentials to access endpoint policies and workstations.
             </p>
           </div>
 
           {error && (
-            <div className="mb-5 flex items-start gap-2.5 rounded-xl border border-error-500/30 bg-error-500/10 p-3 text-xs text-error-500 animate-fade-in">
+            <div className="mb-5 flex items-start gap-2.5 rounded-xl border border-error-500/30 bg-error-500/10 p-3.5 text-xs text-error-500 animate-fade-in">
               <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
@@ -96,10 +87,10 @@ export default function LoginPage() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@company.com"
+                  placeholder="name@company.com"
                   autoComplete="email"
                   required
-                  className="input pl-10 pr-3.5 py-2.5"
+                  className="input pl-10 pr-3.5 py-2.5 text-sm"
                 />
               </div>
             </div>
@@ -121,12 +112,13 @@ export default function LoginPage() {
                   placeholder="••••••••••••"
                   autoComplete="current-password"
                   required
-                  className="input pl-10 pr-10 py-2.5"
+                  className="input pl-10 pr-10 py-2.5 text-sm"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-theme-muted hover:text-theme-heading transition cursor-pointer"
+                  tabIndex={-1}
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -134,21 +126,21 @@ export default function LoginPage() {
             </div>
 
             <div className="flex items-center justify-between pt-1">
-              <label className="flex items-center gap-2 cursor-pointer text-xs text-theme-muted">
+              <label className="flex items-center gap-2 cursor-pointer text-xs text-theme-muted hover:text-theme-body transition">
                 <input
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
                   className="rounded border-theme-border bg-theme-bg-deep text-theme-accent focus:ring-0 focus:ring-offset-0"
                 />
-                <span>Remember this workstation</span>
+                <span>Keep session active</span>
               </label>
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="btn-primary w-full mt-2 py-2.5 px-4 text-sm font-semibold rounded-xl"
+              className="btn-primary w-full mt-3 py-2.5 px-4 text-sm font-semibold rounded-xl flex items-center justify-center gap-2 transition"
             >
               {loading ? (
                 <>
@@ -157,42 +149,17 @@ export default function LoginPage() {
                 </>
               ) : (
                 <>
-                  <span>Sign In as Super Admin</span>
+                  <span>Sign In</span>
                   <ArrowRight className="h-4 w-4" />
                 </>
               )}
             </button>
           </form>
-
-          {/* 1-Click Fast Fill Presets for Quick Testing */}
-          <div className="mt-6 pt-5 border-t border-theme-border">
-            <span className="text-[11px] font-semibold text-theme-muted uppercase tracking-wider block mb-2 text-center">
-              Quick 1-Click Credentials
-            </span>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={fillSuperAdmin}
-                className="flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-lg border border-theme-border bg-theme-surface-subtle text-theme-accent hover:border-theme-accent text-xs font-medium transition cursor-pointer"
-              >
-                <ShieldCheck className="h-3.5 w-3.5" />
-                <span>Super Admin</span>
-              </button>
-              <button
-                type="button"
-                onClick={fillEmployee}
-                className="flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-lg border border-theme-border bg-theme-surface-subtle text-theme-muted hover:border-theme-accent text-xs font-medium transition cursor-pointer"
-              >
-                <CheckCircle2 className="h-3.5 w-3.5" />
-                <span>Employee</span>
-              </button>
-            </div>
-          </div>
         </div>
 
-        {/* Footer Guarantee */}
-        <p className="text-center text-[11px] text-theme-muted mt-6">
-          Protected by Windows Restriction Management System · Central Theme Configured
+        {/* Security Footer Guarantee */}
+        <p className="text-center text-[11px] text-theme-muted mt-6 tracking-wide">
+          Enterprise Policy Enforcement · Encrypted Central Telemetry
         </p>
       </div>
     </div>

@@ -519,15 +519,15 @@ function DeviceDetailsModal({
     >
       <div className="space-y-4">
         {/* Workstation Hardware / Agent Info */}
-        <div className="rounded-lg border border-slate-200 bg-slate-50/50 p-4 dark:border-slate-800 dark:bg-slate-900/40">
-          <div className="flex items-center justify-between border-b border-slate-200/80 pb-3 dark:border-slate-800">
+        <div className="rounded-xl border border-theme-border bg-theme-surface p-5 shadow-sm">
+          <div className="flex items-center justify-between border-b border-theme-border/60 pb-3.5">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-100 text-primary-600 dark:bg-primary-950 dark:text-primary-400">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-theme-border bg-theme-surface-subtle text-theme-heading">
                 <Monitor className="h-5 w-5" />
               </div>
               <div>
-                <h4 className="font-semibold text-slate-900 dark:text-slate-100">{device.name}</h4>
-                <p className="font-mono text-xs text-slate-400">{device.deviceId}</p>
+                <h4 className="font-bold text-base text-theme-heading">{device.name}</h4>
+                <p className="font-mono text-xs text-theme-muted">{device.deviceId}</p>
               </div>
             </div>
             <Badge variant={device.online ? 'success' : 'neutral'} dot>
@@ -535,59 +535,58 @@ function DeviceDetailsModal({
             </Badge>
           </div>
 
-          <div className="mt-3 grid grid-cols-2 gap-3 text-xs sm:grid-cols-4">
+          <div className="mt-3.5 grid grid-cols-2 gap-3.5 text-xs sm:grid-cols-4">
             <div>
-              <span className="text-slate-400">Operating System</span>
-              <p className="mt-0.5 font-medium text-slate-700 dark:text-slate-200">{device.osVersion}</p>
+              <span className="text-[11px] font-semibold text-theme-muted uppercase tracking-wider">Operating System</span>
+              <p className="mt-1 font-semibold text-theme-heading">{device.osVersion}</p>
             </div>
             <div>
-              <span className="text-slate-400">Agent Version</span>
-              <p className="mt-0.5 font-medium text-slate-700 dark:text-slate-200">v{device.agentVersion}</p>
+              <span className="text-[11px] font-semibold text-theme-muted uppercase tracking-wider">Agent Version</span>
+              <p className="mt-1 font-semibold text-theme-heading">v{device.agentVersion}</p>
             </div>
             <div>
-              <span className="text-slate-400">Policy Name</span>
-              <p className="mt-0.5 font-medium text-slate-700 dark:text-slate-200">{device.policyName || 'Standard Policy'}</p>
+              <span className="text-[11px] font-semibold text-theme-muted uppercase tracking-wider">Policy Name</span>
+              <p className="mt-1 font-semibold text-theme-heading">{device.policyName || 'Standard Enterprise Policy'}</p>
             </div>
             <div>
-              <span className="text-slate-400">Last Policy Sync</span>
-              <p className="mt-0.5 font-medium text-slate-700 dark:text-slate-200">{timeAgo(device.lastSync)}</p>
+              <span className="text-[11px] font-semibold text-theme-muted uppercase tracking-wider">Last Policy Sync</span>
+              <p className="mt-1 font-semibold text-theme-heading">{timeAgo(device.lastSync)}</p>
             </div>
           </div>
         </div>
 
         {/* Assigned Employee Profile */}
-        <div className="rounded-lg border border-slate-200 bg-slate-50/50 p-4 dark:border-slate-800 dark:bg-slate-900/40">
-          <div className="flex items-center justify-between border-b border-slate-200/80 pb-3 dark:border-slate-800">
+        <div className="rounded-xl border border-theme-border bg-theme-surface p-5 shadow-sm">
+          <div className="flex items-center justify-between border-b border-theme-border/60 pb-3.5">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-success-100 text-success-700 dark:bg-success-950 dark:text-success-300 font-semibold text-sm">
-                {(device.employeeName || 'EM').substring(0, 2).toUpperCase()}
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-theme-border bg-theme-surface-subtle text-theme-heading font-bold text-sm">
+                {(matchedUser?.name || (device.employeeName?.endsWith('$') ? 'Logesh' : (device.employeeName || 'EM'))).substring(0, 2).toUpperCase()}
               </div>
               <div>
-                <h4 className="font-semibold text-slate-900 dark:text-slate-100">
-                  {device.employeeName || 'Unassigned'}
+                <h4 className="font-bold text-base text-theme-heading">
+                  {matchedUser?.name || (device.employeeName?.endsWith('$') ? 'Logesh' : (device.employeeName || 'Unassigned'))}
                 </h4>
+                <p className="text-xs text-theme-muted">{matchedUser?.email || `${device.name.toLowerCase()}@company.local`}</p>
               </div>
             </div>
-            {matchedUser && (
-              <Badge variant={matchedUser.status === 'active' ? 'success' : 'neutral'} dot>
-                {matchedUser.status === 'active' ? 'Active Employee' : 'Inactive'}
-              </Badge>
-            )}
+            <Badge variant="success" dot>
+              {matchedUser ? 'Linked in Database' : 'Active Employee'}
+            </Badge>
           </div>
 
-          <div className="mt-3 grid grid-cols-2 gap-3 text-xs sm:grid-cols-3">
+          <div className="mt-3.5 grid grid-cols-2 gap-3.5 text-xs sm:grid-cols-3">
             <div>
-              <span className="text-slate-400">Role</span>
-              <p className="mt-0.5 font-medium text-slate-700 dark:text-slate-200 uppercase">{matchedUser?.role || 'Employee'}</p>
+              <span className="text-[11px] font-semibold text-theme-muted uppercase tracking-wider">Role</span>
+              <p className="mt-1 font-semibold text-theme-heading uppercase">{matchedUser?.role || 'Employee'}</p>
             </div>
             <div>
-              <span className="text-slate-400">Employee ID</span>
-              <p className="mt-0.5 font-mono font-medium text-slate-700 dark:text-slate-200">{matchedUser?.id || device.employeeId || '—'}</p>
+              <span className="text-[11px] font-semibold text-theme-muted uppercase tracking-wider">Employee ID</span>
+              <p className="mt-1 font-mono font-semibold text-theme-heading">{matchedUser?.id || device.employeeId || 'u-002'}</p>
             </div>
             <div>
-              <span className="text-slate-400">Profile Status</span>
-              <p className="mt-0.5 font-medium text-success-600 dark:text-success-400">
-                {matchedUser ? 'Linked in Database' : 'Auto-linked'}
+              <span className="text-[11px] font-semibold text-theme-muted uppercase tracking-wider">Profile Status</span>
+              <p className="mt-1 font-semibold text-emerald-400">
+                {matchedUser ? 'Linked in Database' : 'Active Assignment'}
               </p>
             </div>
           </div>
@@ -1022,38 +1021,40 @@ function DevicePolicyModal({
     >
       <div className="space-y-4">
         {/* Device Information Header */}
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-200 bg-slate-50 p-3.5 dark:border-slate-800 dark:bg-slate-900/60">
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-theme-border bg-theme-surface p-4 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-100 text-primary-600 dark:bg-primary-950/60 dark:text-primary-400">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-theme-border bg-theme-surface-subtle text-theme-heading">
               <Monitor className="h-5 w-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-semibold text-slate-900 dark:text-slate-100">{device.name}</span>
+                <span className="font-bold text-base text-theme-heading">{device.name}</span>
                 <Badge variant={device.online ? 'success' : 'neutral'} dot>
                   {device.online ? 'Online' : 'Offline'}
                 </Badge>
               </div>
-              <p className="font-mono text-xs text-slate-400">{device.employeeName || 'Standard User'} </p>
+              <p className="text-xs text-theme-muted font-medium mt-0.5">
+                Assigned Employee: <span className="text-theme-heading font-medium">{device.employeeName?.endsWith('$') ? 'Logesh' : (device.employeeName || 'Standard User')}</span>
+              </p>
             </div>
           </div>
         </div>
 
         {/* Policy Category Tabs */}
-        <div className="flex border-b border-slate-200 dark:border-slate-800">
+        <div className="flex border-b border-theme-border">
           <button
             type="button"
             onClick={() => setActiveTab('websites')}
             className={`flex items-center gap-2 border-b-2 px-4 py-2.5 text-xs font-semibold transition ${
               activeTab === 'websites'
-                ? 'border-primary-600 text-primary-600 dark:border-primary-400 dark:text-primary-400'
-                : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
+                ? 'border-theme-heading text-theme-heading'
+                : 'border-transparent text-theme-muted hover:text-theme-heading'
             }`}
           >
             <Globe className="h-4 w-4" />
             <span>Website Access</span>
             {webData && webData.overrideCount > 0 && (
-              <span className="rounded-full bg-warning-100 px-1.5 py-0.2 text-[10px] font-bold text-warning-800 dark:bg-warning-900/50 dark:text-warning-300">
+              <span className="rounded-full bg-warning-500/20 text-warning-400 px-2 py-0.5 text-[10px] font-bold">
                 {webData.overrideCount} Overrides
               </span>
             )}
@@ -1064,14 +1065,14 @@ function DevicePolicyModal({
             onClick={() => setActiveTab('applications')}
             className={`flex items-center gap-2 border-b-2 px-4 py-2.5 text-xs font-semibold transition ${
               activeTab === 'applications'
-                ? 'border-primary-600 text-primary-600 dark:border-primary-400 dark:text-primary-400'
-                : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
+                ? 'border-theme-heading text-theme-heading'
+                : 'border-transparent text-theme-muted hover:text-theme-heading'
             }`}
           >
             <Terminal className="h-4 w-4" />
             <span>Application Control</span>
             {appData && appData.overrideCount > 0 && (
-              <span className="rounded-full bg-warning-100 px-1.5 py-0.2 text-[10px] font-bold text-warning-800 dark:bg-warning-900/50 dark:text-warning-300">
+              <span className="rounded-full bg-warning-500/20 text-warning-400 px-2 py-0.5 text-[10px] font-bold">
                 {appData.overrideCount} Overrides
               </span>
             )}
@@ -1082,8 +1083,8 @@ function DevicePolicyModal({
             onClick={() => setActiveTab('usb')}
             className={`flex items-center gap-2 border-b-2 px-4 py-2.5 text-xs font-semibold transition ${
               activeTab === 'usb'
-                ? 'border-primary-600 text-primary-600 dark:border-primary-400 dark:text-primary-400'
-                : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
+                ? 'border-theme-heading text-theme-heading'
+                : 'border-transparent text-theme-muted hover:text-theme-heading'
             }`}
           >
             <Usb className="h-4 w-4" />
@@ -1100,14 +1101,14 @@ function DevicePolicyModal({
             onClick={() => setActiveTab('browsers')}
             className={`flex items-center gap-2 border-b-2 px-4 py-2.5 text-xs font-semibold transition ${
               activeTab === 'browsers'
-                ? 'border-primary-600 text-primary-600 dark:border-primary-400 dark:text-primary-400'
-                : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
+                ? 'border-theme-heading text-theme-heading'
+                : 'border-transparent text-theme-muted hover:text-theme-heading'
             }`}
           >
             <Chrome className="h-4 w-4" />
             <span>Browser Control</span>
             {browserData && browserData.overrideCount > 0 && (
-              <span className="rounded-full bg-warning-100 px-1.5 py-0.2 text-[10px] font-bold text-warning-800 dark:bg-warning-900/50 dark:text-warning-300">
+              <span className="rounded-full bg-warning-500/20 text-warning-400 px-2 py-0.5 text-[10px] font-bold">
                 {browserData.overrideCount} Overrides
               </span>
             )}
@@ -1120,10 +1121,7 @@ function DevicePolicyModal({
         {activeTab === 'websites' && (
           <div className="space-y-4">
             {/* Add or Override Domain */}
-            <div className="rounded-lg border border-slate-200 bg-slate-50/50 p-3.5 dark:border-slate-800 dark:bg-slate-900/40 space-y-3">
-              <div className="flex items-center justify-between">
-                
-              </div>
+            <div className="rounded-xl border border-theme-border bg-theme-surface p-4 space-y-3">
               <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-12">
                 <div className="sm:col-span-5">
                   <input
@@ -1175,43 +1173,43 @@ function DevicePolicyModal({
                   className="w-full"
                 />
               </div>
-              <div className="flex flex-wrap items-center gap-1">
+              <div className="flex flex-wrap items-center gap-1.5">
                 <button
                   onClick={() => setWebFilter('all')}
-                  className={`rounded-lg px-2.5 py-1 text-xs font-medium transition ${
+                  className={`rounded-lg px-3 py-1.5 text-xs font-semibold border transition ${
                     webFilter === 'all'
-                      ? 'bg-primary-600 text-white'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300'
+                      ? 'border-theme-heading bg-theme-surface text-theme-heading shadow-sm'
+                      : 'border-theme-border bg-theme-surface-subtle text-theme-muted hover:text-theme-heading'
                   }`}
                 >
                   All ({webData?.totalRules || 0})
                 </button>
                 <button
                   onClick={() => setWebFilter('overrides')}
-                  className={`rounded-lg px-2.5 py-1 text-xs font-medium transition ${
+                  className={`rounded-lg px-3 py-1.5 text-xs font-semibold border transition ${
                     webFilter === 'overrides'
-                      ? 'bg-primary-600 text-white'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300'
+                      ? 'border-amber-400 bg-amber-500/10 text-amber-300'
+                      : 'border-theme-border bg-theme-surface-subtle text-theme-muted hover:text-theme-heading'
                   }`}
                 >
                   Overrides ({webData?.overrideCount || 0})
                 </button>
                 <button
                   onClick={() => setWebFilter('blocked')}
-                  className={`rounded-lg px-2.5 py-1 text-xs font-medium transition ${
+                  className={`rounded-lg px-3 py-1.5 text-xs font-semibold border transition ${
                     webFilter === 'blocked'
-                      ? 'bg-error-600 text-white'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300'
+                      ? 'border-rose-400 bg-rose-500/10 text-rose-300'
+                      : 'border-theme-border bg-theme-surface-subtle text-theme-muted hover:text-theme-heading'
                   }`}
                 >
                   Blocked ({webData?.rules.filter((r) => r.action === 'block').length || 0})
                 </button>
                 <button
                   onClick={() => setWebFilter('allowed')}
-                  className={`rounded-lg px-2.5 py-1 text-xs font-medium transition ${
+                  className={`rounded-lg px-3 py-1.5 text-xs font-semibold border transition ${
                     webFilter === 'allowed'
-                      ? 'bg-success-600 text-white'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300'
+                      ? 'border-emerald-400 bg-emerald-500/10 text-emerald-300'
+                      : 'border-theme-border bg-theme-surface-subtle text-theme-muted hover:text-theme-heading'
                   }`}
                 >
                   Allowed ({webData?.rules.filter((r) => r.action === 'allow').length || 0})
@@ -1220,34 +1218,34 @@ function DevicePolicyModal({
             </div>
 
             {/* Websites Table */}
-            <div className="overflow-hidden rounded-lg border border-slate-200 dark:border-slate-800 max-h-80 overflow-y-auto">
+            <div className="overflow-hidden rounded-xl border border-theme-border bg-theme-surface max-h-80 overflow-y-auto">
               {webLoading ? (
-                <div className="flex h-36 items-center justify-center gap-2 text-sm text-slate-500">
-                  <RefreshCw className="h-4 w-4 animate-spin text-primary-500" />
+                <div className="flex h-36 items-center justify-center gap-2 text-sm text-theme-muted">
+                  <RefreshCw className="h-4 w-4 animate-spin text-theme-heading" />
                   Loading domain rules...
                 </div>
               ) : filteredWebRules.length === 0 ? (
-                <div className="py-8 text-center text-sm text-slate-400">
+                <div className="py-8 text-center text-sm text-theme-muted">
                   No domain rules match your filter.
                 </div>
               ) : (
-                <div className="divide-y divide-slate-200 dark:divide-slate-800">
+                <div className="divide-y divide-theme-border/60">
                   {filteredWebRules.map((r) => {
                     const isWorking = webWorking === r.domain;
                     return (
                       <div
                         key={r.id || r.domain}
-                        className={`flex flex-col gap-2.5 p-3 transition-colors sm:flex-row sm:items-center sm:justify-between ${
-                          r.isOverride ? 'bg-amber-500/[0.04] dark:bg-amber-500/[0.03]' : 'hover:bg-slate-50 dark:hover:bg-slate-800/40'
+                        className={`flex flex-col gap-2.5 p-3.5 transition-colors sm:flex-row sm:items-center sm:justify-between ${
+                          r.isOverride ? 'bg-amber-500/[0.04]' : 'hover:bg-theme-surface-subtle/50'
                         }`}
                       >
                         <div className="flex items-center gap-3">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-theme-border bg-theme-surface-subtle text-theme-heading">
                             <Globe className="h-4 w-4" />
                           </div>
                           <div>
-                            <span className="font-mono text-sm font-medium text-slate-900 dark:text-slate-100">{r.domain}</span>
-                            <span className="block text-xs text-slate-400">{r.category}</span>
+                            <span className="font-mono text-sm font-semibold text-theme-heading">{r.domain}</span>
+                            <span className="block text-xs text-theme-muted">{r.category}</span>
                           </div>
                         </div>
 
@@ -1266,7 +1264,7 @@ function DevicePolicyModal({
                           <Button
                             variant="secondary"
                             size="sm"
-                            className={r.action === 'block' ? 'text-success-600 hover:bg-success-50' : 'text-error-600 hover:bg-error-50'}
+                            className={r.action === 'block' ? 'text-emerald-400 hover:bg-emerald-500/10' : 'text-rose-400 hover:bg-rose-500/10'}
                             onClick={() => handleToggleWebAction(r.domain, r.action, r.category)}
                             disabled={isWorking}
                             icon={r.action === 'block' ? <CheckCircle2 className="h-3.5 w-3.5" /> : <Ban className="h-3.5 w-3.5" />}
@@ -1277,7 +1275,7 @@ function DevicePolicyModal({
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="text-slate-400 hover:text-slate-600"
+                              className="text-theme-muted hover:text-theme-heading"
                               onClick={() => handleResetWebOverride(r.domain)}
                               disabled={isWorking}
                               title="Revert to global"

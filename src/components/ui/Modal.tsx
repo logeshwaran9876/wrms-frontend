@@ -22,21 +22,32 @@ export default function Modal({ open, onClose, title, description, children, foo
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in">
-      <div className="absolute inset-0 bg-black/75" onClick={onClose} />
-      <div className={`relative w-full ${sizeMap[size]} card animate-scale-in`} style={{ padding: 0 }}>
-        <div className="flex items-start justify-between border-b border-theme-border p-5">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 animate-fade-in">
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity" onClick={onClose} />
+      <div
+        className={`relative w-full ${sizeMap[size]} rounded-2xl border border-theme-border bg-theme-surface shadow-2xl animate-scale-in overflow-hidden flex flex-col max-h-[90vh]`}
+      >
+        {/* Modal Header */}
+        <div className="flex items-start justify-between border-b border-theme-border px-6 py-5 bg-theme-surface shrink-0">
           <div>
-            <h3 className="text-lg font-semibold text-theme-heading">{title}</h3>
-            {description && <p className="mt-1 text-sm text-theme-muted">{description}</p>}
+            <h3 className="text-lg font-bold tracking-tight text-theme-heading">{title}</h3>
+            {description && <p className="mt-1 text-xs text-theme-muted leading-relaxed">{description}</p>}
           </div>
-          <button onClick={onClose} className="btn-ghost -mt-1 -mr-2 p-1.5">
+          <button
+            onClick={onClose}
+            className="rounded-lg p-1.5 text-theme-muted hover:text-theme-heading hover:bg-theme-surface-subtle transition cursor-pointer"
+            aria-label="Close modal"
+          >
             <X className="h-5 w-5" />
           </button>
         </div>
-        <div className="max-h-[60vh] overflow-y-auto p-5">{children}</div>
+
+        {/* Modal Scrollable Body */}
+        <div className="overflow-y-auto px-6 py-5 grow bg-theme-bg/40">{children}</div>
+
+        {/* Modal Footer */}
         {footer && (
-          <div className="flex items-center justify-end gap-3 border-t border-theme-border p-5">
+          <div className="flex items-center justify-end gap-3 border-t border-theme-border px-6 py-4 bg-theme-surface shrink-0">
             {footer}
           </div>
         )}

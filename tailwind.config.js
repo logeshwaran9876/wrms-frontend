@@ -21,9 +21,9 @@ export default {
           'accent-hover': 'var(--theme-accent-hover)',
           'accent-text': 'var(--theme-accent-text)',
         },
-        // High-contrast text adaptations so text-slate-* / text-gray-* are always crisp on dark surfaces
+        // High-contrast harmonious slate and gray palettes mapped to dark theme tokens
         slate: {
-          50: '#f8fafc',
+          50: 'var(--theme-surface)',
           100: 'var(--theme-text-heading)',
           200: 'var(--theme-text-heading)',
           300: 'var(--theme-text-body)',
@@ -31,12 +31,12 @@ export default {
           500: 'var(--theme-text-muted)',
           600: 'var(--theme-text-muted)',
           700: 'var(--theme-text-body)',
-          800: 'var(--theme-text-heading)',
-          900: 'var(--theme-text-heading)',
-          950: 'var(--theme-text-heading)',
+          800: 'var(--theme-surface-subtle)',
+          900: 'var(--theme-surface)',
+          950: 'var(--theme-bg-deep)',
         },
         gray: {
-          50: '#f8fafc',
+          50: 'var(--theme-surface)',
           100: 'var(--theme-text-heading)',
           200: 'var(--theme-text-heading)',
           300: 'var(--theme-text-body)',
@@ -44,9 +44,9 @@ export default {
           500: 'var(--theme-text-muted)',
           600: 'var(--theme-text-muted)',
           700: 'var(--theme-text-body)',
-          800: 'var(--theme-text-heading)',
-          900: 'var(--theme-text-heading)',
-          950: 'var(--theme-text-heading)',
+          800: 'var(--theme-surface-subtle)',
+          900: 'var(--theme-surface)',
+          950: 'var(--theme-bg-deep)',
         },
         primary: {
           50: 'rgba(201, 164, 106, 0.08)',
