@@ -1,0 +1,30 @@
+:root {
+  /* Backgrounds */
+  --theme-bg: #0f1115;           /* Deep obsidian grey */
+  --theme-bg-deep: #090a0c;      /* Darker sidebar */
+  
+  /* Cards & Surfaces */
+  --theme-surface: #161920;      /* Distinct card color */
+  --theme-surface-subtle: #1e222b;
+  --theme-surface-hover: #262b36;
+  --theme-border: rgba(255, 255, 255, 0.08);
+  --theme-border-subtle: rgba(255, 255, 255, 0.04);
+
+  /* Text */
+  --theme-text-heading: #f8fafc; /* Pure white headings */
+  --theme-text-body: #94a3b8;    /* Cool grey body */
+  --theme-text-muted: #64748b;
+
+  /* Accents (Silver/White for active states) */
+  --theme-accent: #e2e8f0;       
+  --theme-accent-hover: #f1f5f9;
+  --theme-accent-active: #cbd5e1;
+  --theme-accent-text: #0f1115;  /* Dark text on bright button */
+  --theme-accent-glow: transparent;
+
+  /* Status */
+  --theme-success: #10b981;
+  --theme-warning: #f59e0b;
+  --theme-error: #ef4444;
+  --theme-info: #3b82f6;
+}

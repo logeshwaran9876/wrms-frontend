@@ -1,0 +1,171 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import './styles/theme.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    border-color: var(--theme-border-subtle);
+  }
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  body {
+    background-color: var(--theme-bg);
+    color: var(--theme-text-heading);
+    font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  /* Universal text-white and text-slate-100/200 harmonization to heading color */
+  .dark .text-white,
+  .text-white,
+  .dark .text-slate-100,
+  .dark .text-slate-200,
+  .text-slate-100,
+  .text-slate-200 {
+    color: var(--theme-text-heading) !important;
+  }
+
+  /* Universal Form Controls - solid theme surfaces, no stark white or grey inputs */
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea {
+    background-color: var(--theme-bg-deep) !important;
+    color: var(--theme-text-heading) !important;
+    border-color: var(--theme-border) !important;
+  }
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--theme-text-muted) !important;
+  }
+  input:focus,
+  select:focus,
+  textarea:focus {
+    border-color: var(--theme-accent) !important;
+    outline: none !important;
+  }
+
+  /* Universal Table Styles */
+  table th {
+    color: var(--theme-text-muted) !important;
+    border-color: var(--theme-border) !important;
+  }
+  table td {
+    border-color: var(--theme-border-subtle) !important;
+  }
+}
+
+@layer components {
+  /* Universal Card - Solid, clean, elegant surface (Zero Glass, Pure Solid) */
+  .card {
+    background-color: var(--theme-surface);
+    border: 1px solid var(--theme-border);
+    color: var(--theme-text-heading);
+    border-radius: 1rem;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Universal Input - Solid canvas, delicate hairline border, crisp focus */
+  .input {
+    width: 100%;
+    border-radius: 0.625rem;
+    border: 1px solid var(--theme-border);
+    background-color: var(--theme-bg-deep);
+    padding: 0.5rem 0.875rem;
+    font-size: 0.875rem;
+    color: var(--theme-text-heading);
+    transition: all 0.15s ease-in-out;
+  }
+  .input::placeholder {
+    color: var(--theme-text-muted);
+  }
+  .input:focus {
+    border-color: var(--theme-accent);
+    outline: none;
+    box-shadow: 0 0 0 1px var(--theme-accent);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 9999px;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.15s ease-in-out;
+    cursor: pointer;
+  }
+  .btn:disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  /* Universal Primary Button (10% Brass Accent - Solid, Pill-Shaped, Button Text: #111111) */
+  .btn-primary {
+    background-color: var(--theme-accent);
+    color: var(--theme-accent-text);
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  }
+  .btn-primary:hover {
+    background-color: var(--theme-accent-hover);
+  }
+  .btn-primary:active {
+    background-color: var(--theme-accent-active);
+  }
+
+  /* Universal Secondary Button */
+  .btn-secondary {
+    border: 1px solid var(--theme-border);
+    background-color: var(--theme-surface-subtle);
+    color: var(--theme-text-heading);
+    border-radius: 9999px;
+  }
+  .btn-secondary:hover {
+    background-color: var(--theme-surface-hover);
+    border-color: var(--theme-accent);
+  }
+
+  .btn-danger {
+    background-color: var(--theme-error);
+    color: #ffffff;
+  }
+
+  .btn-ghost {
+    color: var(--theme-text-body);
+  }
+  .btn-ghost:hover {
+    background-color: var(--theme-surface-hover);
+    color: var(--theme-text-heading);
+  }
+
+  .label {
+    margin-bottom: 0.375rem;
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--theme-text-body);
+  }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--theme-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--theme-border);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--theme-accent);
+}
