@@ -19,8 +19,8 @@ import {
   policyComplianceData,
 } from '@/data/mockData';
 
-// Curated Heritage Palette matching Combo 05: Emerald & Brass
-const pieColors = ['#c9a46a', '#d8b37b', '#c06c54', '#f3eee3', '#0a261c'];
+// Modern Cyber Theme Palette matching Dark Obsidian Enterprise UI
+const pieColors = ['#f43f5e', '#f59e0b', '#8b5cf6', '#0ea5e9', '#10b981', '#ec4899'];
 
 export default function DashboardPage() {
   const [loading, setLoading] = useState(false);
@@ -106,7 +106,7 @@ export default function DashboardPage() {
         <Card padding="md" className="hover:border-theme-accent/40 transition">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold uppercase tracking-wider text-theme-muted">Blocked Applications</span>
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-theme-bg-deep border border-theme-border text-[#c06c54]">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-theme-bg-deep border border-theme-border text-amber-400">
               <AppWindow className="h-4 w-4" />
             </div>
           </div>
@@ -120,13 +120,13 @@ export default function DashboardPage() {
         <Card padding="md" className="hover:border-theme-accent/40 transition">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold uppercase tracking-wider text-theme-muted">USB Storage</span>
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-theme-bg-deep border border-theme-border text-[#c06c54]">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-theme-bg-deep border border-theme-border text-rose-400">
               <Usb className="h-4 w-4" />
             </div>
           </div>
           <div className="mt-3 flex items-baseline gap-2.5">
-            <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#3d1c16] text-[#e08e79] border border-[#6b3528]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#e08e79] inline-block"></span>
+            <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-rose-500/15 text-rose-400 border border-rose-500/30">
+              <span className="h-1.5 w-1.5 rounded-full bg-rose-400 inline-block"></span>
               {usbStatus}
             </span>
             <span className="text-xs text-theme-muted">Kernel Mass Storage</span>
@@ -134,7 +134,7 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      {/* Row 2: Charts (Heritage Emerald & Brass Styling - Solid Surfaces, Clean Axes) */}
+      {/* Row 2: Charts (Luminous Cyber Styling - Solid Obsidian Surfaces, Crisp Glow Lines) */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Trend Area Chart (Span 2) */}
         <Card padding="md" className="lg:col-span-2">
@@ -147,28 +147,31 @@ export default function DashboardPage() {
               <AreaChart data={accessTrend} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorAllowed" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#c9a46a" stopOpacity={0.35} />
-                    <stop offset="95%" stopColor="#c9a46a" stopOpacity={0.0} />
+                    <stop offset="5%" stopColor="#38bdf8" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="#38bdf8" stopOpacity={0.0} />
                   </linearGradient>
                   <linearGradient id="colorBlocked" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#c06c54" stopOpacity={0.35} />
-                    <stop offset="95%" stopColor="#c06c54" stopOpacity={0.0} />
+                    <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.4} />
+                    <stop offset="95%" stopColor="#f43f5e" stopOpacity={0.0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(243, 238, 227, 0.08)" />
-                <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#cfc8b8' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 11, fill: '#cfc8b8' }} axisLine={false} tickLine={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.06)" />
+                <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#0a261c',
-                    border: '1px solid rgba(243, 238, 227, 0.15)',
-                    borderRadius: '8px',
+                    backgroundColor: '#161920',
+                    border: '1px solid rgba(255, 255, 255, 0.12)',
+                    borderRadius: '10px',
+                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.6)',
                     fontSize: '12px',
-                    color: '#f3eee3',
+                    color: '#f8fafc',
                   }}
+                  itemStyle={{ color: '#f8fafc', padding: '2px 0' }}
+                  labelStyle={{ color: '#94a3b8', fontWeight: 600, marginBottom: '4px' }}
                 />
-                <Area type="monotone" dataKey="allowed" stroke="#c9a46a" strokeWidth={2.5} fill="url(#colorAllowed)" name="Allowed" />
-                <Area type="monotone" dataKey="blocked" stroke="#c06c54" strokeWidth={2.5} fill="url(#colorBlocked)" name="Blocked" />
+                <Area type="monotone" dataKey="allowed" stroke="#38bdf8" strokeWidth={2.5} fill="url(#colorAllowed)" name="Allowed" />
+                <Area type="monotone" dataKey="blocked" stroke="#f43f5e" strokeWidth={2.5} fill="url(#colorBlocked)" name="Blocked" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -194,19 +197,22 @@ export default function DashboardPage() {
                   paddingAngle={3}
                 >
                   {categories.map((_, i) => (
-                    <Cell key={i} fill={pieColors[i % pieColors.length]} />
+                    <Cell key={i} fill={pieColors[i % pieColors.length]} stroke="#161920" strokeWidth={2} />
                   ))}
                 </Pie>
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#0a261c',
-                    border: '1px solid rgba(243, 238, 227, 0.15)',
-                    borderRadius: '8px',
+                    backgroundColor: '#161920',
+                    border: '1px solid rgba(255, 255, 255, 0.12)',
+                    borderRadius: '10px',
+                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.6)',
                     fontSize: '12px',
-                    color: '#f3eee3',
+                    color: '#f8fafc',
                   }}
+                  itemStyle={{ color: '#f8fafc', padding: '2px 0' }}
+                  labelStyle={{ color: '#94a3b8', fontWeight: 600, marginBottom: '4px' }}
                 />
-                <Legend wrapperStyle={{ fontSize: '11px', color: '#cfc8b8' }} />
+                <Legend wrapperStyle={{ fontSize: '11px', color: '#94a3b8' }} />
               </PieChart>
             </ResponsiveContainer>
           </div>
@@ -215,28 +221,44 @@ export default function DashboardPage() {
 
       {/* Row 3: Compliance & Active Layers */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        {/* Policy Compliance BarChart - Solid Brass Bars (No Neon Green) */}
+        {/* Policy Compliance BarChart - Emerald Cyber Gradient Bars with sleek radius */}
         <Card padding="md" className="lg:col-span-2">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-semibold text-theme-heading">Policy Compliance</h3>
-            <span className="text-xs text-theme-accent font-medium">100% Target Met</span>
+            <span className="text-xs text-emerald-400 font-semibold bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">100% Target Met</span>
           </div>
           <div className="h-52 w-full min-h-[200px]">
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={complianceData.map(c => ({ ...c, label: c.department || 'Workstations' }))} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(243, 238, 227, 0.08)" />
-                <XAxis dataKey="label" tick={{ fontSize: 11, fill: '#cfc8b8' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 11, fill: '#cfc8b8' }} domain={[0, 100]} axisLine={false} tickLine={false} />
+                <defs>
+                  <linearGradient id="complianceGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor="#10b981" stopOpacity={0.95} />
+                    <stop offset="100%" stopColor="#059669" stopOpacity={0.65} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.06)" />
+                <XAxis dataKey="label" tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} domain={[0, 100]} axisLine={false} tickLine={false} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#0a261c',
-                    border: '1px solid rgba(243, 238, 227, 0.15)',
-                    borderRadius: '8px',
+                    backgroundColor: '#161920',
+                    border: '1px solid rgba(255, 255, 255, 0.12)',
+                    borderRadius: '10px',
+                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.6)',
                     fontSize: '12px',
-                    color: '#f3eee3',
+                    color: '#f8fafc',
                   }}
+                  itemStyle={{ color: '#f8fafc', padding: '2px 0' }}
+                  labelStyle={{ color: '#94a3b8', fontWeight: 600, marginBottom: '4px' }}
                 />
-                <Bar dataKey="compliance" radius={[6, 6, 0, 0]} fill="#c9a46a" name="Compliance %" />
+                <Bar dataKey="compliance" radius={[8, 8, 0, 0]} fill="url(#complianceGradient)" name="Compliance %" maxBarSize={56}>
+                  {complianceData.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={entry.compliance >= 90 ? 'url(#complianceGradient)' : entry.compliance >= 50 ? '#f59e0b' : '#f43f5e'}
+                    />
+                  ))}
+                </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
