@@ -180,7 +180,7 @@ export default function DevicesPage() {
       </div>
 
       <Card padding="none">
-        <div className="flex flex-col gap-3 border-b border-slate-200 p-4 dark:border-slate-800 sm:flex-row sm:items-center">
+        <div className="flex flex-col gap-3 border-b border-theme-border p-4 sm:flex-row sm:items-center">
           <SearchInput value={search} onChange={setSearch} placeholder="Search by device name, ID, or employee..." className="flex-1" />
           <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="input sm:w-44">
             <option value="all">All Statuses</option>
@@ -410,12 +410,12 @@ function RegisterDeviceModal({
         </div>
 
         {/* Assigned Employee Section */}
-        <div className="rounded-lg border border-slate-200 bg-slate-50/70 p-3.5 dark:border-slate-800 dark:bg-slate-900/50 space-y-3">
+        <div className="rounded-xl border border-theme-border bg-theme-surface p-4 space-y-3 shadow-sm">
           <div className="flex items-center justify-between">
-            <label className="label mb-0 font-semibold text-slate-800 dark:text-slate-200">
+            <label className="label mb-0 font-semibold text-theme-heading">
               Assigned Employee
             </label>
-            <span className="text-[11px] text-slate-400">
+            <span className="text-[11px] text-theme-muted">
               Auto-creates if new
             </span>
           </div>
@@ -1300,8 +1300,7 @@ function DevicePolicyModal({
         {activeTab === 'applications' && (
           <div className="space-y-4">
             {/* Quick Presets */}
-            <div className="flex flex-wrap items-center gap-1.5 rounded-lg border border-slate-200/80 bg-slate-50/70 p-3 dark:border-slate-800 dark:bg-slate-900/40">
-       
+            <div className="flex flex-wrap items-center gap-2 rounded-xl border border-theme-border bg-theme-surface p-3.5 shadow-sm">
               {APP_PRESETS.map((preset) => {
                 const currentRule = appData?.rules.find((r) => r.executableName.toLowerCase() === preset.exe.toLowerCase());
                 const isBlocked = currentRule?.action === 'block';
@@ -1312,23 +1311,22 @@ function DevicePolicyModal({
                     type="button"
                     disabled={isWorking}
                     onClick={() => handlePresetApp(preset, isBlocked ? 'allow' : 'block')}
-                    className={`flex items-center gap-1 rounded-md px-2.5 py-1 text-xs font-medium border transition ${
+                    className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold border transition cursor-pointer ${
                       isBlocked
-                        ? 'border-error-300 bg-error-50 text-error-700 dark:border-error-500/30 dark:bg-error-500/10 dark:text-error-400'
-                        : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300'
+                        ? 'border-rose-500/30 bg-rose-500/10 text-rose-300'
+                        : 'border-theme-border bg-theme-surface-subtle text-theme-heading hover:bg-theme-surface-hover'
                     }`}
                   >
                     {isBlocked ? <Ban className="h-3 w-3" /> : <Plus className="h-3 w-3" />}
                     <span>{preset.name}</span>
-                    <span className="text-[10px] opacity-70">({isBlocked ? 'Blocked' : 'Click to Block'})</span>
+                    <span className="text-[10px] text-theme-muted">({isBlocked ? 'Blocked' : 'Click to Block'})</span>
                   </button>
                 );
               })}
             </div>
 
             {/* Add or Override Application Form */}
-            <div className="rounded-lg border border-slate-200 bg-slate-50/50 p-3.5 dark:border-slate-800 dark:bg-slate-900/40 space-y-3">
-             
+            <div className="rounded-xl border border-theme-border bg-theme-surface p-4 space-y-3 shadow-sm">
               <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-12">
                 <div className="sm:col-span-5">
                   <input
@@ -1380,34 +1378,33 @@ function DevicePolicyModal({
                   className="w-full"
                 />
               </div>
-              <div className="flex flex-wrap items-center gap-1">
-                
+              <div className="flex flex-wrap items-center gap-1.5">
                 <button
                   onClick={() => setAppFilter('overrides')}
-                  className={`rounded-lg px-2.5 py-1 text-xs font-medium transition ${
+                  className={`rounded-lg px-3 py-1.5 text-xs font-semibold border transition cursor-pointer ${
                     appFilter === 'overrides'
-                      ? 'bg-primary-600 text-white'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300'
+                      ? 'border-amber-400 bg-amber-500/10 text-amber-300'
+                      : 'border-theme-border bg-theme-surface-subtle text-theme-muted hover:text-theme-heading'
                   }`}
                 >
                   Overrides ({appData?.overrideCount || 0})
                 </button>
                 <button
                   onClick={() => setAppFilter('blocked')}
-                  className={`rounded-lg px-2.5 py-1 text-xs font-medium transition ${
+                  className={`rounded-lg px-3 py-1.5 text-xs font-semibold border transition cursor-pointer ${
                     appFilter === 'blocked'
-                      ? 'bg-error-600 text-white'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300'
+                      ? 'border-rose-400 bg-rose-500/10 text-rose-300'
+                      : 'border-theme-border bg-theme-surface-subtle text-theme-muted hover:text-theme-heading'
                   }`}
                 >
                   Blocked ({appData?.rules.filter((r) => r.action === 'block').length || 0})
                 </button>
                 <button
                   onClick={() => setAppFilter('allowed')}
-                  className={`rounded-lg px-2.5 py-1 text-xs font-medium transition ${
+                  className={`rounded-lg px-3 py-1.5 text-xs font-semibold border transition cursor-pointer ${
                     appFilter === 'allowed'
-                      ? 'bg-success-600 text-white'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300'
+                      ? 'border-emerald-400 bg-emerald-500/10 text-emerald-300'
+                      : 'border-theme-border bg-theme-surface-subtle text-theme-muted hover:text-theme-heading'
                   }`}
                 >
                   Allowed ({appData?.rules.filter((r) => r.action === 'allow').length || 0})
@@ -1416,7 +1413,7 @@ function DevicePolicyModal({
             </div>
 
             {/* Applications Table */}
-            <div className="overflow-hidden rounded-lg border border-slate-200 dark:border-slate-800 max-h-80 overflow-y-auto">
+            <div className="overflow-hidden rounded-xl border border-theme-border bg-theme-surface max-h-80 overflow-y-auto">
               {appLoading ? (
                 <div className="flex h-36 items-center justify-center gap-2 text-sm text-slate-500">
                   <RefreshCw className="h-4 w-4 animate-spin text-primary-500" />
@@ -1427,25 +1424,25 @@ function DevicePolicyModal({
                   No application rules configured yet.
                 </div>
               ) : (
-                <div className="divide-y divide-slate-200 dark:divide-slate-800">
+                <div className="divide-y divide-theme-border/60">
                   {filteredAppRules.map((r) => {
                     const isWorking = appWorking === r.executableName;
                     return (
                       <div
                         key={r.id || r.executableName}
-                        className={`flex flex-col gap-2.5 p-3 transition-colors sm:flex-row sm:items-center sm:justify-between ${
-                          r.isOverride ? 'bg-amber-500/[0.04] dark:bg-amber-500/[0.03]' : 'hover:bg-slate-50 dark:hover:bg-slate-800/40'
+                        className={`flex flex-col gap-2.5 p-3.5 transition-colors sm:flex-row sm:items-center sm:justify-between ${
+                          r.isOverride ? 'bg-amber-500/[0.04]' : 'hover:bg-theme-surface-subtle/50'
                         }`}
                       >
                         <div className="flex items-center gap-3">
-                          <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${
-                            r.action === 'block' ? 'bg-error-100 text-error-600 dark:bg-error-950 dark:text-error-400' : 'bg-success-100 text-success-600 dark:bg-success-950 dark:text-success-400'
+                          <div className={`flex h-8 w-8 items-center justify-center rounded-lg border border-theme-border ${
+                            r.action === 'block' ? 'bg-rose-500/10 text-rose-400 border-rose-500/20' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
                           }`}>
                             <Terminal className="h-4 w-4" />
                           </div>
                           <div>
-                            <span className="font-mono text-sm font-semibold text-slate-900 dark:text-slate-100">{r.executableName}</span>
-                            <span className="block text-xs text-slate-400">{r.appName}</span>
+                            <span className="font-mono text-sm font-semibold text-theme-heading">{r.executableName}</span>
+                            <span className="block text-xs text-theme-muted">{r.appName}</span>
                           </div>
                         </div>
 
@@ -1457,7 +1454,7 @@ function DevicePolicyModal({
                             <div className="flex items-center gap-1.5">
                               <Badge variant="warning">Device Override</Badge>
                               {r.globalAction && (
-                                <span className="text-[11px] text-slate-400">
+                                <span className="text-[11px] text-theme-muted">
                                   (Global: {r.globalAction.toUpperCase()})
                                 </span>
                               )}
@@ -1471,7 +1468,7 @@ function DevicePolicyModal({
                           <Button
                             variant="secondary"
                             size="sm"
-                            className={r.action === 'block' ? 'text-success-600 hover:bg-success-50' : 'text-error-600 hover:bg-error-50'}
+                            className={r.action === 'block' ? 'text-emerald-400 hover:bg-emerald-500/10' : 'text-rose-400 hover:bg-rose-500/10'}
                             onClick={() => handleToggleAppAction(r)}
                             disabled={isWorking}
                             icon={r.action === 'block' ? <CheckCircle2 className="h-3.5 w-3.5" /> : <Ban className="h-3.5 w-3.5" />}
@@ -1482,7 +1479,7 @@ function DevicePolicyModal({
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="text-slate-400 hover:text-slate-600"
+                              className="text-theme-muted hover:text-theme-heading"
                               onClick={() => handleResetAppOverride(r)}
                               disabled={isWorking}
                               title="Revert to global"
@@ -1507,25 +1504,25 @@ function DevicePolicyModal({
         {activeTab === 'usb' && (
           <div className="space-y-4">
             {/* Effective Status Card */}
-            <div className="rounded-xl border border-primary-300/60 bg-gradient-to-r from-primary-50/70 via-slate-50 to-primary-50/40 p-4 dark:border-primary-500/30 dark:from-primary-950/40 dark:via-slate-900 dark:to-primary-950/20 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="rounded-xl border border-theme-border bg-theme-surface p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
               <div className="flex items-center gap-3">
                 <div className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl shadow-sm ${
-                  usbData?.effectiveAction === 'block' ? 'bg-error-600 text-white' :
-                  usbData?.effectiveAction === 'read_only' ? 'bg-warning-600 text-white' :
-                  'bg-success-600 text-white'
+                  usbData?.effectiveAction === 'block' ? 'bg-rose-600 text-white' :
+                  usbData?.effectiveAction === 'read_only' ? 'bg-amber-600 text-white' :
+                  'bg-emerald-600 text-white'
                 }`}>
                   <Usb className="h-6 w-6" />
                 </div>
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Active USB Policy for {device.name}:</span>
+                    <span className="text-xs font-bold text-theme-muted uppercase tracking-wider">Active USB Policy for {device.name}:</span>
                     <Badge variant={usbData?.effectiveAction === 'block' ? 'error' : usbData?.effectiveAction === 'read_only' ? 'warning' : 'success'} dot>
                       {usbData?.effectiveAction === 'block' ? 'BLOCKED' : usbData?.effectiveAction === 'read_only' ? 'READ-ONLY (Write-Protected)' : 'ALLOWED (Full Read/Write)'}
                     </Badge>
                   </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">
+                  <p className="text-xs text-theme-muted mt-1">
                     {usbData?.isOverride ? (
-                      <span className="text-warning-600 dark:text-warning-400 font-semibold">
+                      <span className="text-amber-400 font-semibold">
                         Custom Device Override active (Global baseline is {usbData.globalAction.toUpperCase()}).
                       </span>
                     ) : (
@@ -1543,22 +1540,22 @@ function DevicePolicyModal({
                 type="button"
                 disabled={usbSaving}
                 onClick={() => handleSetUsbAction('inherit')}
-                className={`flex flex-col text-left p-4 rounded-xl border transition-all ${
+                className={`flex flex-col text-left p-4 rounded-xl border transition-all cursor-pointer ${
                   !usbData?.isOverride
-                    ? 'border-primary-600 bg-primary-50/60 dark:border-primary-400 dark:bg-primary-950/40 shadow-sm ring-1 ring-primary-500'
-                    : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/70 dark:border-slate-800 dark:bg-slate-900/60 dark:hover:border-slate-700'
+                    ? 'border-theme-heading bg-theme-surface-subtle shadow-sm ring-1 ring-theme-heading'
+                    : 'border-theme-border bg-theme-surface hover:bg-theme-surface-subtle hover:border-theme-border'
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-theme-border bg-theme-surface-subtle text-theme-heading">
                       <RotateCcw className="h-4 w-4" />
                     </div>
-                    <span className="font-semibold text-sm text-slate-900 dark:text-slate-100">Inherit Global Policy</span>
+                    <span className="font-semibold text-sm text-theme-heading">Inherit Global Policy</span>
                   </div>
                   {!usbData?.isOverride && <Badge variant="primary">Active</Badge>}
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-xs text-theme-muted">
                   Follows the company-wide global setting (currently: <strong>{usbData?.globalAction?.toUpperCase()}</strong>).
                 </p>
               </button>
@@ -1568,22 +1565,22 @@ function DevicePolicyModal({
                 type="button"
                 disabled={usbSaving}
                 onClick={() => handleSetUsbAction('block')}
-                className={`flex flex-col text-left p-4 rounded-xl border transition-all ${
+                className={`flex flex-col text-left p-4 rounded-xl border transition-all cursor-pointer ${
                   usbData?.isOverride && usbData?.deviceAction === 'block'
-                    ? 'border-error-600 bg-error-50/60 dark:border-error-500 dark:bg-error-950/40 shadow-sm ring-1 ring-error-500'
-                    : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/70 dark:border-slate-800 dark:bg-slate-900/60 dark:hover:border-slate-700'
+                    ? 'border-rose-500 bg-rose-500/10 shadow-sm ring-1 ring-rose-500'
+                    : 'border-theme-border bg-theme-surface hover:bg-theme-surface-subtle hover:border-theme-border'
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-error-100 text-error-600 dark:bg-error-950 dark:text-error-400">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-rose-500/30 bg-rose-500/10 text-rose-400">
                       <Ban className="h-4 w-4" />
                     </div>
-                    <span className="font-semibold text-sm text-slate-900 dark:text-slate-100">Block All USB Storage</span>
+                    <span className="font-semibold text-sm text-theme-heading">Block All USB Storage</span>
                   </div>
                   {usbData?.isOverride && usbData?.deviceAction === 'block' && <Badge variant="error">Active Override</Badge>}
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-xs text-theme-muted">
                   Completely disables USB mass storage drives on this specific workstation.
                 </p>
               </button>
@@ -1593,22 +1590,22 @@ function DevicePolicyModal({
                 type="button"
                 disabled={usbSaving}
                 onClick={() => handleSetUsbAction('read_only')}
-                className={`flex flex-col text-left p-4 rounded-xl border transition-all ${
+                className={`flex flex-col text-left p-4 rounded-xl border transition-all cursor-pointer ${
                   usbData?.isOverride && usbData?.deviceAction === 'read_only'
-                    ? 'border-warning-600 bg-warning-50/60 dark:border-warning-500 dark:bg-warning-950/40 shadow-sm ring-1 ring-warning-500'
-                    : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/70 dark:border-slate-800 dark:bg-slate-900/60 dark:hover:border-slate-700'
+                    ? 'border-amber-500 bg-amber-500/10 shadow-sm ring-1 ring-amber-500'
+                    : 'border-theme-border bg-theme-surface hover:bg-theme-surface-subtle hover:border-theme-border'
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-warning-100 text-warning-600 dark:bg-warning-950 dark:text-warning-400">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-amber-500/30 bg-amber-500/10 text-amber-400">
                       <BookOpen className="h-4 w-4" />
                     </div>
-                    <span className="font-semibold text-sm text-slate-900 dark:text-slate-100">Read-Only Mode</span>
+                    <span className="font-semibold text-sm text-theme-heading">Read-Only Mode</span>
                   </div>
                   {usbData?.isOverride && usbData?.deviceAction === 'read_only' && <Badge variant="warning">Active Override</Badge>}
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-xs text-theme-muted">
                   Files on USB can be viewed; writing or copying to USB is blocked.
                 </p>
               </button>
@@ -1618,29 +1615,26 @@ function DevicePolicyModal({
                 type="button"
                 disabled={usbSaving}
                 onClick={() => handleSetUsbAction('allow')}
-                className={`flex flex-col text-left p-4 rounded-xl border transition-all ${
+                className={`flex flex-col text-left p-4 rounded-xl border transition-all cursor-pointer ${
                   usbData?.isOverride && usbData?.deviceAction === 'allow'
-                    ? 'border-success-600 bg-success-50/60 dark:border-success-500 dark:bg-success-950/40 shadow-sm ring-1 ring-success-500'
-                    : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/70 dark:border-slate-800 dark:bg-slate-900/60 dark:hover:border-slate-700'
+                    ? 'border-emerald-500 bg-emerald-500/10 shadow-sm ring-1 ring-emerald-500'
+                    : 'border-theme-border bg-theme-surface hover:bg-theme-surface-subtle hover:border-theme-border'
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-success-100 text-success-600 dark:bg-success-950 dark:text-success-400">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-400">
                       <CheckCircle2 className="h-4 w-4" />
                     </div>
-                    <span className="font-semibold text-sm text-slate-900 dark:text-slate-100">Allow Full Access</span>
+                    <span className="font-semibold text-sm text-theme-heading">Allow Full Access</span>
                   </div>
                   {usbData?.isOverride && usbData?.deviceAction === 'allow' && <Badge variant="success">Active Override</Badge>}
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-xs text-theme-muted">
                   Permits full read & write access to USB drives even if globally blocked.
                 </p>
               </button>
             </div>
-
-            {/* Hardware Isolation Notice */}
-            
           </div>
         )}
 
@@ -1707,15 +1701,15 @@ function DevicePolicyModal({
                   return (
                     <div
                       key={b.id}
-                      className="p-3.5 border rounded-xl border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 transition"
+                      className="p-4 border rounded-xl border-theme-border bg-theme-surface transition shadow-sm space-y-3"
                     >
                       {/* Browser Header */}
-                      <div className="flex items-center justify-between pb-2.5 border-b border-slate-100 dark:border-slate-800">
+                      <div className="flex items-center justify-between pb-3 border-b border-theme-border/60">
                         <div className="flex items-center gap-2.5">
-                          <div className={`flex h-7 w-7 items-center justify-center rounded-lg ${b.bg}`}>
+                          <div className={`flex h-8 w-8 items-center justify-center rounded-lg border border-theme-border ${b.bg}`}>
                             {b.icon}
                           </div>
-                          <span className="text-sm font-bold text-slate-900 dark:text-white">
+                          <span className="text-sm font-bold text-theme-heading">
                             {b.name}
                           </span>
                         </div>
@@ -1727,14 +1721,14 @@ function DevicePolicyModal({
                       </div>
 
                       {/* 2 Controls */}
-                      <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {/* Control 1: Private Browsing */}
-                        <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800/60 flex flex-col justify-between">
+                        <div className="p-3 rounded-xl bg-theme-surface-subtle border border-theme-border flex flex-col justify-between">
                           <div>
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-1.5">
-                                <Lock className="h-3.5 w-3.5 text-slate-500" />
-                                <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+                                <Lock className="h-3.5 w-3.5 text-theme-muted" />
+                                <span className="text-xs font-bold text-theme-heading">
                                   Private Browsing
                                 </span>
                               </div>
@@ -1742,9 +1736,9 @@ function DevicePolicyModal({
                                 {isPrivBlocked ? 'Blocked' : 'Allowed'}
                               </Badge>
                             </div>
-                            <p className="mt-1 text-[11px] text-slate-400">
+                            <p className="mt-1 text-[11px] text-theme-muted">
                               {isPrivOverride ? (
-                                <span className="text-warning-600 dark:text-warning-400 font-medium">
+                                <span className="text-amber-400 font-medium">
                                   Overridden (Global: {privRule?.globalEnabled ? 'Blocked' : 'Allowed'})
                                 </span>
                               ) : (
@@ -1752,14 +1746,14 @@ function DevicePolicyModal({
                               )}
                             </p>
                           </div>
-                          <div className="mt-2.5 flex gap-1">
+                          <div className="mt-3 flex gap-1.5">
                             <button
                               disabled={browserSaving}
                               onClick={() => handleSetBrowserOverride(b.id, 'private_browsing', true)}
-                              className={`flex-1 py-1 px-2 text-[11px] font-medium rounded-lg transition ${
+                              className={`flex-1 py-1.5 px-2.5 text-xs font-semibold rounded-lg border transition cursor-pointer ${
                                 isPrivBlocked && isPrivOverride
-                                  ? 'bg-error-600 text-white'
-                                  : 'bg-error-50 text-error-700 hover:bg-error-100 dark:bg-error-500/10 dark:text-error-400'
+                                  ? 'bg-rose-600 text-white border-rose-600'
+                                  : 'bg-rose-500/10 text-rose-300 border-rose-500/20 hover:bg-rose-500/20'
                               }`}
                             >
                               Block
@@ -1767,10 +1761,10 @@ function DevicePolicyModal({
                             <button
                               disabled={browserSaving}
                               onClick={() => handleSetBrowserOverride(b.id, 'private_browsing', false)}
-                              className={`flex-1 py-1 px-2 text-[11px] font-medium rounded-lg transition ${
+                              className={`flex-1 py-1.5 px-2.5 text-xs font-semibold rounded-lg border transition cursor-pointer ${
                                 !isPrivBlocked && isPrivOverride
-                                  ? 'bg-success-600 text-white'
-                                  : 'bg-success-50 text-success-700 hover:bg-success-100 dark:bg-success-500/10 dark:text-success-400'
+                                  ? 'bg-emerald-600 text-white border-emerald-600'
+                                  : 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20 hover:bg-emerald-500/20'
                               }`}
                             >
                               Allow
@@ -1781,7 +1775,7 @@ function DevicePolicyModal({
                                 onClick={() =>
                                   handleResetBrowserOverride({ browser: b.id, controlType: 'private_browsing' })
                                 }
-                                className="py-1 px-2 text-[11px] font-medium rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-400 transition"
+                                className="py-1.5 px-2.5 text-xs font-medium rounded-lg border border-theme-border bg-theme-surface text-theme-muted hover:text-theme-heading transition cursor-pointer"
                                 title="Inherit global policy"
                               >
                                 Inherit
@@ -1791,12 +1785,12 @@ function DevicePolicyModal({
                         </div>
 
                         {/* Control 2: Extensions */}
-                        <div className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800/60 flex flex-col justify-between">
+                        <div className="p-3 rounded-xl bg-theme-surface-subtle border border-theme-border flex flex-col justify-between">
                           <div>
                             <div className="flex items-center justify-between">
                               <div className="flex items-center gap-1.5">
-                                <Puzzle className="h-3.5 w-3.5 text-slate-500" />
-                                <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+                                <Puzzle className="h-3.5 w-3.5 text-theme-muted" />
+                                <span className="text-xs font-bold text-theme-heading">
                                   Extension Lockdown
                                 </span>
                               </div>
@@ -1804,9 +1798,9 @@ function DevicePolicyModal({
                                 {isExtBlocked ? 'Blocked' : 'Allowed'}
                               </Badge>
                             </div>
-                            <p className="mt-1 text-[11px] text-slate-400">
+                            <p className="mt-1 text-[11px] text-theme-muted">
                               {isExtOverride ? (
-                                <span className="text-warning-600 dark:text-warning-400 font-medium">
+                                <span className="text-amber-400 font-medium">
                                   Overridden (Global: {extRule?.globalEnabled ? 'Blocked' : 'Allowed'})
                                 </span>
                               ) : (
@@ -1814,14 +1808,14 @@ function DevicePolicyModal({
                               )}
                             </p>
                           </div>
-                          <div className="mt-2.5 flex gap-1">
+                          <div className="mt-3 flex gap-1.5">
                             <button
                               disabled={browserSaving}
                               onClick={() => handleSetBrowserOverride(b.id, 'extensions', true)}
-                              className={`flex-1 py-1 px-2 text-[11px] font-medium rounded-lg transition ${
+                              className={`flex-1 py-1.5 px-2.5 text-xs font-semibold rounded-lg border transition cursor-pointer ${
                                 isExtBlocked && isExtOverride
-                                  ? 'bg-error-600 text-white'
-                                  : 'bg-error-50 text-error-700 hover:bg-error-100 dark:bg-error-500/10 dark:text-error-400'
+                                  ? 'bg-rose-600 text-white border-rose-600'
+                                  : 'bg-rose-500/10 text-rose-300 border-rose-500/20 hover:bg-rose-500/20'
                               }`}
                             >
                               Block All
@@ -1829,10 +1823,10 @@ function DevicePolicyModal({
                             <button
                               disabled={browserSaving}
                               onClick={() => handleSetBrowserOverride(b.id, 'extensions', false)}
-                              className={`flex-1 py-1 px-2 text-[11px] font-medium rounded-lg transition ${
+                              className={`flex-1 py-1.5 px-2.5 text-xs font-semibold rounded-lg border transition cursor-pointer ${
                                 !isExtBlocked && isExtOverride
-                                  ? 'bg-success-600 text-white'
-                                  : 'bg-success-50 text-success-700 hover:bg-success-100 dark:bg-success-500/10 dark:text-success-400'
+                                  ? 'bg-emerald-600 text-white border-emerald-600'
+                                  : 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20 hover:bg-emerald-500/20'
                               }`}
                             >
                               Allow
@@ -1843,7 +1837,7 @@ function DevicePolicyModal({
                                 onClick={() =>
                                   handleResetBrowserOverride({ browser: b.id, controlType: 'extensions' })
                                 }
-                                className="py-1 px-2 text-[11px] font-medium rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-400 transition"
+                                className="py-1.5 px-2.5 text-xs font-medium rounded-lg border border-theme-border bg-theme-surface text-theme-muted hover:text-theme-heading transition cursor-pointer"
                                 title="Inherit global policy"
                               >
                                 Inherit

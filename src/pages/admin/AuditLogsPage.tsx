@@ -369,33 +369,33 @@ export default function AuditLogsPage() {
         {selectedLog && (
           <div className="space-y-4 text-xs">
             {/* Top Key Facts */}
-            <div className="grid grid-cols-2 gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+            <div className="grid grid-cols-2 gap-3.5 p-4 rounded-xl bg-theme-surface border border-theme-border shadow-sm">
               <div>
-                <span className="text-slate-400 block text-[11px] uppercase tracking-wider font-semibold">
+                <span className="text-theme-muted block text-[11px] uppercase tracking-wider font-semibold">
                   Who (Actor)
                 </span>
-                <p className="mt-1 font-bold text-sm text-slate-900 dark:text-white">{selectedLog.actor}</p>
+                <p className="mt-1 font-bold text-sm text-theme-heading">{selectedLog.actor}</p>
               </div>
 
               <div>
-                <span className="text-slate-400 block text-[11px] uppercase tracking-wider font-semibold">
+                <span className="text-theme-muted block text-[11px] uppercase tracking-wider font-semibold">
                   For Who (Target)
                 </span>
-                <p className="mt-1 font-bold text-sm text-primary-600 dark:text-primary-400">{selectedLog.target}</p>
+                <p className="mt-1 font-bold text-sm text-theme-heading">{selectedLog.target}</p>
               </div>
 
               <div>
-                <span className="text-slate-400 block text-[11px] uppercase tracking-wider font-semibold">
+                <span className="text-theme-muted block text-[11px] uppercase tracking-wider font-semibold">
                   When (Timestamp)
                 </span>
-                <p className="mt-1 font-medium text-slate-800 dark:text-slate-200">
+                <p className="mt-1 font-medium text-theme-heading">
                   {formatDateTime(selectedLog.timestamp)}
                 </p>
-                <p className="text-slate-400 text-[10px]">{timeAgo(selectedLog.timestamp)}</p>
+                <p className="text-theme-muted text-[10px]">{timeAgo(selectedLog.timestamp)}</p>
               </div>
 
               <div>
-                <span className="text-slate-400 block text-[11px] uppercase tracking-wider font-semibold">
+                <span className="text-theme-muted block text-[11px] uppercase tracking-wider font-semibold">
                   Event Category
                 </span>
                 <div className="mt-1">
@@ -408,25 +408,25 @@ export default function AuditLogsPage() {
 
             {/* Action & Explanation */}
             <div>
-              <span className="text-slate-400 block font-semibold text-[11px] uppercase tracking-wider">
+              <span className="text-theme-muted block font-semibold text-[11px] uppercase tracking-wider">
                 Action Performed
               </span>
-              <p className="mt-1 p-2.5 rounded-lg bg-slate-100 dark:bg-slate-800 font-semibold text-slate-900 dark:text-white text-sm">
+              <p className="mt-1 p-3 rounded-xl bg-theme-surface border border-theme-border font-semibold text-theme-heading text-sm">
                 {selectedLog.action}
               </p>
             </div>
 
             <div>
-              <span className="text-slate-400 block font-semibold text-[11px] uppercase tracking-wider">
+              <span className="text-theme-muted block font-semibold text-[11px] uppercase tracking-wider">
                 Event Description & Details
               </span>
-              <p className="mt-1 p-3 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 leading-relaxed bg-white dark:bg-slate-900">
+              <p className="mt-1 p-3.5 rounded-xl border border-theme-border text-theme-body leading-relaxed bg-theme-surface">
                 {selectedLog.details || 'No additional parameters logged for this event.'}
               </p>
             </div>
 
             {/* Raw System Metadata */}
-            <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-400 font-mono">
+            <div className="pt-2 border-t border-theme-border flex items-center justify-between text-[11px] text-theme-muted font-mono">
               <span>Internal Ref: {selectedLog.id}</span>
               <span>Audited</span>
             </div>

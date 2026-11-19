@@ -318,29 +318,29 @@ export default function PoliciesPage() {
 
               {/* Dynamic Live Rule Matrix */}
               <div className="mt-4 grid grid-cols-4 gap-2">
-                <div className="flex flex-col items-center rounded-lg bg-slate-50 py-2.5 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
-                  <Globe className="h-4 w-4 text-primary-500" />
-                  <p className="mt-1 text-sm font-bold text-slate-900 dark:text-white">{policy.rules?.website || 0}</p>
-                  <p className="text-[10px] text-slate-400">Websites</p>
+                <div className="flex flex-col items-center rounded-lg bg-theme-surface-subtle py-2.5 border border-theme-border">
+                  <Globe className="h-4 w-4 text-theme-heading" />
+                  <p className="mt-1 text-sm font-bold text-theme-heading">{policy.rules?.website || 0}</p>
+                  <p className="text-[10px] text-theme-muted">Websites</p>
                 </div>
-                <div className="flex flex-col items-center rounded-lg bg-slate-50 py-2.5 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
-                  <AppWindow className="h-4 w-4 text-purple-500" />
-                  <p className="mt-1 text-sm font-bold text-slate-900 dark:text-white">
+                <div className="flex flex-col items-center rounded-lg bg-theme-surface-subtle py-2.5 border border-theme-border">
+                  <AppWindow className="h-4 w-4 text-theme-heading" />
+                  <p className="mt-1 text-sm font-bold text-theme-heading">
                     {policy.rules?.application || 0}
                   </p>
-                  <p className="text-[10px] text-slate-400">Applications</p>
+                  <p className="text-[10px] text-theme-muted">Applications</p>
                 </div>
-                <div className="flex flex-col items-center rounded-lg bg-slate-50 py-2.5 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
-                  <Chrome className="h-4 w-4 text-cyan-500" />
-                  <p className="mt-1 text-sm font-bold text-slate-900 dark:text-white">{policy.rules?.browser || 5}</p>
-                  <p className="text-[10px] text-slate-400">5 Browsers</p>
+                <div className="flex flex-col items-center rounded-lg bg-theme-surface-subtle py-2.5 border border-theme-border">
+                  <Chrome className="h-4 w-4 text-theme-heading" />
+                  <p className="mt-1 text-sm font-bold text-theme-heading">{policy.rules?.browser || 5}</p>
+                  <p className="text-[10px] text-theme-muted">5 Browsers</p>
                 </div>
-                <div className="flex flex-col items-center rounded-lg bg-slate-50 py-2.5 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
-                  <Usb className="h-4 w-4 text-rose-500" />
-                  <p className="mt-1 text-sm font-bold text-slate-900 dark:text-white">
+                <div className="flex flex-col items-center rounded-lg bg-theme-surface-subtle py-2.5 border border-theme-border">
+                  <Usb className="h-4 w-4 text-theme-heading" />
+                  <p className="mt-1 text-sm font-bold text-theme-heading">
                     {policy.rules?.usb ? 'Active' : 'Allow'}
                   </p>
-                  <p className="text-[10px] text-slate-400">USB Storage</p>
+                  <p className="text-[10px] text-theme-muted">USB Storage</p>
                 </div>
               </div>
 
