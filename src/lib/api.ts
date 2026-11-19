@@ -16,7 +16,7 @@ import type {
 } from '@/types';
 
 const envApiUrl = typeof import.meta !== 'undefined' && import.meta.env ? import.meta.env.VITE_API_URL : '';
-const API_BASE = envApiUrl ? `${envApiUrl.replace(/\/+$/, '')}/api` : '/api';
+const API_BASE = envApiUrl ? `${envApiUrl.replace(/\/+$/, '')}/api` : 'https://wrms-backend-2m6u.onrender.com/api';
 
 async function fetchJson<T>(url: string, options?: RequestInit): Promise<T> {
   const token = typeof window !== 'undefined' ? localStorage.getItem('wrms_token') : null;

@@ -32,6 +32,6 @@ npm run build
    - **Build Command**: `npm run build`
    - **Output Directory**: `dist`
 6. In **Environment Variables**:
-   - `VITE_API_URL`: `https://your-wrms-backend.onrender.com` (point to your deployed Render backend)
+   - `VITE_API_URL`: `https://wrms-backend-2m6u.onrender.com`
 7. Click **Deploy**!
 8. `vercel.json` already contains the SPA rewrite configuration to prevent 404 errors on browser page reloads.
