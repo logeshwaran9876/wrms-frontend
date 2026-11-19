@@ -165,7 +165,7 @@ export default function ApplicationControlPage() {
     <div className="space-y-6">
       <PageHeader
         title="Application Control"
-
+        description="Execution restrictions and process control rules to prohibit unapproved software and unauthorized executables."
         icon={<AppWindow className="h-5 w-5" />}
         actions={
           <div className="flex items-center gap-2">

@@ -126,7 +126,7 @@ export default function UsbControlPage() {
     <div className="space-y-6">
       <PageHeader
         title="USB Storage Control"
-
+        description="Manage USB mass storage device rules, read/write restrictions, and hardware unauthorized drive blocks."
         icon={<Usb className="h-5 w-5" />}
         actions={
           <div className="flex items-center gap-2">

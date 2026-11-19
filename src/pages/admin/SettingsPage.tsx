@@ -14,7 +14,7 @@ export default function SettingsPage() {
     <div className="space-y-6">
       <PageHeader
         title="Settings"
-        description="System configuration, security, notifications, and appearance preferences."
+        description="Central administrative controls, cloud API connectivity, security thresholds, and system preferences."
         icon={<Settings className="h-5 w-5" />}
       />
 

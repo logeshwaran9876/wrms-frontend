@@ -18,7 +18,7 @@ export default function PageHeader({ title, description, actions, icon }: PageHe
         )}
         <div>
           <h1 className="text-xl font-bold text-theme-heading sm:text-2xl">{title}</h1>
-          {description && <p className="mt-1 text-xs text-theme-muted">{description}</p>}
+          {description && <p className="mt-1 text-sm text-theme-muted leading-relaxed max-w-3xl">{description}</p>}
         </div>
       </div>
       {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}

@@ -218,15 +218,7 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
                     <span>System Settings</span>
                   </Link>
 
-                  <Link
-                    to="/employee-portal"
-                    onClick={() => setProfileOpen(false)}
-                    className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-theme-body hover:bg-theme-surface-hover hover:text-theme-heading transition"
-                  >
-                    <UserIcon className="h-3.5 w-3.5 text-theme-muted" />
-                    <span>Employee Portal</span>
-                  </Link>
-
+                  
                   <div className="my-1 border-t border-theme-border/50" />
 
                   <button

@@ -427,20 +427,7 @@ export default function Sidebar({
                 </div>
               </div>
 
-              <div className="group relative">
-                <NavLink
-                  to="/settings"
-                  title="System Settings"
-                  className="flex h-8 w-8 items-center justify-center rounded-xl text-theme-muted hover:text-theme-heading hover:bg-theme-surface/80 transition"
-                >
-                  <Settings className="h-4 w-4" />
-                </NavLink>
-                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:flex items-center z-50 pointer-events-none">
-                  <div className="rounded-lg border border-theme-border bg-theme-surface px-2 py-1 text-[10px] font-semibold text-theme-heading shadow-xl whitespace-nowrap">
-                    System Settings
-                  </div>
-                </div>
-              </div>
+          
             </div>
           )}
         </div>

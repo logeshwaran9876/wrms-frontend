@@ -127,7 +127,7 @@ export default function EmployeesPage() {
     <div className="space-y-6">
       <PageHeader
         title="Employee Management"
-        description="Create and manage employee accounts and linked Windows workstations."
+        description="Directory of company employees, account privileges, and assigned Windows workstations."
         icon={<Users className="h-5 w-5" />}
         actions={<Button icon={<Plus className="h-4 w-4" />} onClick={() => { setEditing(null); setModalOpen(true); }}>Add Employee</Button>}
       />

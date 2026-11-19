@@ -65,7 +65,7 @@ export default function DashboardPage() {
       {/* Header */}
       <PageHeader
         title="Dashboard"
-        description="Live overview of endpoint security and policy enforcement."
+        description="Real-time telemetry overview of workstation health, active enforcement engines, and security compliance across the enterprise fleet."
        
       />
 

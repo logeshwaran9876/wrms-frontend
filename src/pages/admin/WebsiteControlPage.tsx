@@ -160,7 +160,7 @@ export default function WebsiteControlPage() {
     <div className="space-y-6">
       <PageHeader
         title="Website Control"
-
+        description="Central URL and domain filtering rules enforced via DNS and Windows Hosts file to block unauthorized and malicious web access."
         icon={<Globe className="h-5 w-5" />}
         actions={
           <div className="flex items-center gap-2">

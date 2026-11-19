@@ -126,7 +126,7 @@ export default function AuditLogsPage() {
     <div className="space-y-6">
       <PageHeader
         title="Audit Logs"
-        
+        description="Complete immutable security audit trail tracking policy violations, enforcement events, and system administration activities."
         icon={<ScrollText className="h-5 w-5" />}
         actions={
           <div className="flex gap-2">

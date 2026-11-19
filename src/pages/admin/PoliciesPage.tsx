@@ -197,7 +197,7 @@ export default function PoliciesPage() {
     <div className="space-y-6">
       <PageHeader
         title="Enterprise Policy Management"
-     
+        description="Create, orchestrate, and deploy enterprise security policies across departments and workstation groups."
         icon={<FileText className="h-5 w-5" />}
         actions={
           <div className="flex gap-2">

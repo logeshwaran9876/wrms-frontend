@@ -155,7 +155,7 @@ export default function DevicesPage() {
     <div className="space-y-6">
       <PageHeader
         title="Device Management"
-        description="Register and monitor company Windows devices, track agent versions and policy sync status."
+        description="Live registry of enrolled Windows workstations, real-time agent heartbeats, operating systems, and policy sync status."
         icon={<Monitor className="h-5 w-5" />}
         actions={<Button icon={<Plus className="h-4 w-4" />} onClick={() => setRegisterOpen(true)}>Register Device</Button>}
       />
