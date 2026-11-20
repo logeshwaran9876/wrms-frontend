@@ -49,7 +49,6 @@ const governanceItems: NavItem[] = [
   { to: '/policies', label: 'Policy Management', icon: FileText },
   { to: '/audit-logs', label: 'Audit Trail', icon: ScrollText },
   { to: '/reports', label: 'Compliance Reports', icon: BarChart3 },
-  { to: '/settings', label: 'System Settings', icon: Settings },
 ];
 
 // Recreating the exact Thor triangular 3-dots icon (.::) from the screenshot
