@@ -132,7 +132,7 @@ export default function EmployeePortalPage() {
               <div className="mt-4 space-y-2">
                 {blockedApps.map((r) => (
                   <div key={r.id} className="flex items-center gap-3 rounded-xl border border-theme-border p-3 bg-theme-surface">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-theme-bg-deep border border-theme-border text-[#c06c54]"><Ban className="h-4 w-4" /></div>
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-theme-bg-deep border border-theme-border text-rose-400"><Ban className="h-4 w-4" /></div>
                     <div className="flex-1">
                       <p className="text-sm font-bold text-theme-heading">{r.appName}</p>
                       <p className="text-xs text-theme-muted">{r.publisher}</p>
