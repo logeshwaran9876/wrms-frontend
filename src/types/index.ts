@@ -2,7 +2,7 @@ export type UserRole = 'super_admin' | 'admin' | 'employee';
 
 export type RequestStatus = 'pending' | 'approved' | 'rejected' | 'expired' | 'revoked';
 
-export type PolicyApplicationStatus = 'applied' | 'partial' | 'failed' | 'pending';
+export type PolicyApplicationStatus = 'applied' | 'partial' | 'failed' | 'pending' | 'uninstalled';
 
 export interface User {
   id: string;
@@ -50,6 +50,70 @@ export interface Device {
   lastSync: string;
   status: PolicyApplicationStatus;
   online: boolean;
+  ipAddress?: string;
+  publicIp?: string;
+  macAddress?: string;
+  location?: {
+    city: string;
+    region: string;
+    country: string;
+    countryCode: string;
+    isp: string;
+  };
+  firewallStatus?: 'enabled' | 'partial' | 'disabled' | 'unknown';
+  firewallEnabled?: boolean;
+  targetFirewallState?: 'on' | 'off' | 'as-is';
+  openPorts?: Array<{
+    port: number;
+    protocol: string;
+    processName?: string;
+    isAllowed: boolean;
+    isBlocked?: boolean;
+  }>;
+  blockedPorts?: Array<{
+    port: number;
+    protocol: string;
+    blockedAt?: string;
+    reason?: string;
+  }>;
+  openPortsCount?: number;
+  disallowedPortsCount?: number;
+  unenrolledAt?: string;
+}
+
+export interface DeviceSoftware {
+  id: string;
+  deviceId: string;
+  name: string;
+  executable?: string;
+  publisher: string;
+  version: string;
+  installDate?: string;
+  status: 'installed' | 'uninstalled';
+  executionCount: number;
+  lastUsed?: string;
+  isBlocked?: boolean;
+}
+
+export interface MasterPort {
+  port: number;
+  protocol: string;
+  serviceName: string;
+  description?: string;
+  isDefault?: boolean;
+  active: boolean;
+}
+
+export interface ComplaintsData {
+  total: number;
+  complianceRate: number;
+  complaintRate: number;
+  breakdown: Array<{
+    category: string;
+    count: number;
+    percentage: number;
+    color: string;
+  }>;
 }
 
 export interface WebsiteRule {
@@ -183,4 +247,23 @@ export interface DashboardStats {
   activePolicyName?: string;
   activePolicyVersion?: number | string;
   enforcementLayers?: number;
+  totalComplaints?: number;
+  complianceRate?: number;
+  complaintRate?: number;
+  disallowedPorts?: number;
+  firewallDisabledCount?: number;
+}
+
+export interface ComplaintCategoryItem {
+  category: string;
+  count: number;
+  percentage: number;
+  color: string;
+}
+
+export interface DashboardComplaints {
+  total: number;
+  complianceRate: number;
+  complaintRate: number;
+  breakdown: ComplaintCategoryItem[];
 }

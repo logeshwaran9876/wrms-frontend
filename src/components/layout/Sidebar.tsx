@@ -18,6 +18,8 @@ import {
   PanelLeftOpen,
   Activity,
   ShieldCheck,
+  Radio,
+  Layers,
 } from 'lucide-react';
 
 interface NavItem {
@@ -39,6 +41,8 @@ const fleetItems: NavItem[] = [
 ];
 
 const restrictionItems: NavItem[] = [
+  { to: '/ports', label: 'Port Management', icon: Radio, badge: 'Live' },
+  { to: '/software', label: 'Software Inventory', icon: Layers, badge: 'Catalog' },
   { to: '/website-control', label: 'Website Filtering', icon: Globe },
   { to: '/application-control', label: 'Application Control', icon: AppWindow },
   { to: '/usb-control', label: 'USB Storage Control', icon: Usb },

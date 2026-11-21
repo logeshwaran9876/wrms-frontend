@@ -126,8 +126,8 @@ export default function ReportsPage() {
 
   // Primary active workstation dynamically resolved from MongoDB
   const primaryDev = devices[0] || {
-    name: 'DESKTOP-0MOUMVJ',
-    employeeName: 'Logesh',
+    name: 'Workstation',
+    employeeName: 'Workstation User',
     policyName: 'Standard Enterprise Policy',
     lastSync: new Date().toISOString(),
   };
@@ -189,8 +189,8 @@ export default function ReportsPage() {
 
   // Dynamically constructed Report Events from live MongoDB rules & logs
   const reportEvents = useMemo(() => {
-    const devName = primaryDev.name || 'DESKTOP-0MOUMVJ';
-    const empName = primaryDev.employeeName || 'Logesh';
+    const devName = primaryDev.name || 'Workstation';
+    const empName = primaryDev.employeeName || 'Workstation User';
 
     if (selectedReport === 'website-events') {
       if (webRules.length > 0) {

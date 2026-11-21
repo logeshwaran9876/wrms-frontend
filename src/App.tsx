@@ -16,6 +16,8 @@ import PoliciesPage from '@/pages/admin/PoliciesPage';
 import ReportsPage from '@/pages/admin/ReportsPage';
 import AuditLogsPage from '@/pages/admin/AuditLogsPage';
 import SettingsPage from '@/pages/admin/SettingsPage';
+import PortsManagementPage from '@/pages/admin/PortsManagementPage';
+import SoftwareManagementPage from '@/pages/admin/SoftwareManagementPage';
 import EmployeePortalPage from '@/pages/EmployeePortalPage';
 import AccessDeniedPage from '@/pages/AccessDeniedPage';
 
@@ -35,6 +37,8 @@ export default function App() {
                   <Route path="/" element={<DashboardPage />} />
                   <Route path="/employees" element={<EmployeesPage />} />
                   <Route path="/devices" element={<DevicesPage />} />
+                  <Route path="/ports" element={<PortsManagementPage />} />
+                  <Route path="/software" element={<SoftwareManagementPage />} />
                   <Route path="/website-control" element={<WebsiteControlPage />} />
                   <Route path="/application-control" element={<ApplicationControlPage />} />
                   <Route path="/browser-control" element={<BrowserControlPage />} />

@@ -2,6 +2,8 @@ import type {
   User,
   Department,
   Device,
+  DeviceSoftware,
+  MasterPort,
   WebsiteRule,
   ApplicationRule,
   BrowserRule,
@@ -11,6 +13,7 @@ import type {
   PaginatedAuditLogs,
   Notification,
   DashboardStats,
+  DashboardComplaints,
   AuthResponse,
   LoginPayload,
 } from '@/types';
@@ -129,6 +132,53 @@ export const devicesApi = {
     fetchJson<{ message: string; device: Device }>(`${API_BASE}/devices/${id}/sync`, {
       method: 'POST',
     }),
+  uninstall: (id: string) =>
+    fetchJson<{ message: string; device: Device }>(`${API_BASE}/devices/${id}/uninstall`, {
+      method: 'POST',
+    }),
+  getPorts: (id: string) =>
+    fetchJson<{
+      deviceId: string;
+      deviceName: string;
+      openPorts: Array<{ port: number; protocol: string; processName?: string; isAllowed: boolean }>;
+      openPortsCount: number;
+      disallowedPortsCount: number;
+      masterPorts: MasterPort[];
+    }>(`${API_BASE}/devices/${id}/ports`),
+  getSoftware: (id: string, filter?: string) =>
+    fetchJson<{
+      deviceId: string;
+      total: number;
+      software: DeviceSoftware[];
+    }>(`${API_BASE}/devices/${id}/software${filter ? `?filter=${filter}` : ''}`),
+  getMasterPorts: () => fetchJson<MasterPort[]>(`${API_BASE}/devices/master-ports`),
+  saveMasterPort: (data: Partial<MasterPort>) =>
+    fetchJson<MasterPort>(`${API_BASE}/devices/master-ports`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  deleteMasterPort: (port: number) =>
+    fetchJson<{ message: string }>(`${API_BASE}/devices/master-ports/${port}`, {
+      method: 'DELETE',
+    }),
+  blockPort: (deviceId: string, port: number, protocol?: string, reason?: string) =>
+    fetchJson<{ message: string; device: Device }>(`${API_BASE}/devices/${deviceId}/block-port`, {
+      method: 'POST',
+      body: JSON.stringify({ port, protocol, reason }),
+    }),
+  unblockPort: (deviceId: string, port: number) =>
+    fetchJson<{ message: string; device: Device }>(`${API_BASE}/devices/${deviceId}/unblock-port`, {
+      method: 'POST',
+      body: JSON.stringify({ port }),
+    }),
+  toggleFirewall: (deviceId: string, enabled: boolean) =>
+    fetchJson<{ message: string; device: Device; targetFirewallState: string; firewallEnabled: boolean }>(
+      `${API_BASE}/devices/${deviceId}/toggle-firewall`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ enabled }),
+      }
+    ),
   delete: (id: string) =>
     fetchJson<{ message: string; id: string }>(`${API_BASE}/devices/${id}`, {
       method: 'DELETE',
@@ -296,6 +346,16 @@ export const applicationRulesApi = {
       method: 'POST',
       body: JSON.stringify(data),
     }),
+  blockInstalled: (data: { appName: string; executable?: string; publisher?: string; scope?: string; scopeTarget?: string }) =>
+    fetchJson<{ message: string; rule: ApplicationRule }>(`${API_BASE}/application-rules/block-installed`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  unblockInstalled: (data: { executable: string; deviceId?: string }) =>
+    fetchJson<{ message: string }>(`${API_BASE}/application-rules/unblock-installed`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
   update: (id: string, data: Partial<ApplicationRule>) =>
     fetchJson<ApplicationRule>(`${API_BASE}/application-rules/${id}`, {
       method: 'PUT',
@@ -453,6 +513,7 @@ export const dashboardApi = {
       accessTrend: Array<{ date: string; blocked: number; allowed: number }>;
       categories: Array<{ category: string; count: number }>;
       compliance: Array<{ department: string; compliance: number; devices: number }>;
+      complaints?: DashboardComplaints;
     }>(`${API_BASE}/dashboard/overview`),
   getStats: () =>
     fetchJson<DashboardStats>(`${API_BASE}/dashboard/stats`),

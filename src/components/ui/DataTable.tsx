@@ -12,12 +12,14 @@ interface DataTableProps<T> {
   columns: Column<T>[];
   data: T[];
   emptyMessage?: string;
+  keyExtractor?: (row: T, index: number) => string;
 }
 
-export function DataTable<T extends { id: string }>({
+export function DataTable<T extends Record<string, any>>({
   columns,
   data,
   emptyMessage = 'No records found',
+  keyExtractor,
 }: DataTableProps<T>) {
   if (data.length === 0) {
     return (
@@ -43,11 +45,15 @@ export function DataTable<T extends { id: string }>({
           </tr>
         </thead>
         <tbody className="divide-y divide-theme-border-subtle">
-          {data.map((row) => (
-            <tr
-              key={row.id}
-              className="transition-colors hover:bg-theme-surface-hover"
-            >
+          {data.map((row, index) => {
+            const rowKey = keyExtractor
+              ? keyExtractor(row, index)
+              : (row.id ?? (row.port !== undefined ? `${row.port}-${row.protocol || ''}-${index}` : (row.name ? `${row.name}-${index}` : String(index))));
+            return (
+              <tr
+                key={rowKey}
+                className="transition-colors hover:bg-theme-surface-hover"
+              >
               {columns.map((col) => (
                 <td
                   key={col.key}
@@ -56,8 +62,9 @@ export function DataTable<T extends { id: string }>({
                   {col.render ? col.render(row) : (row as Record<string, ReactNode>)[col.key]}
                 </td>
               ))}
-            </tr>
-          ))}
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
