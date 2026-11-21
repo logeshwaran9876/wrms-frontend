@@ -293,7 +293,7 @@ export default function PortsManagementPage() {
       <PageHeader
         title="Workstation Port Management"
         description="Monitor open listening ports, audit compliance against Master Allowed Baseline, and 1-click enforce port blocking."
-        action={
+        actions={
           <div className="flex items-center gap-2">
             <Button
               variant="secondary"

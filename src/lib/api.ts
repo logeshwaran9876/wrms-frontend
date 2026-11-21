@@ -140,9 +140,10 @@ export const devicesApi = {
     fetchJson<{
       deviceId: string;
       deviceName: string;
-      openPorts: Array<{ port: number; protocol: string; processName?: string; isAllowed: boolean }>;
+      openPorts: Array<{ port: number; protocol: string; processName?: string; isAllowed: boolean; isBlocked?: boolean }>;
       openPortsCount: number;
       disallowedPortsCount: number;
+      blockedPorts?: Array<{ port: number; protocol: string; blockedAt?: string; reason?: string }>;
       masterPorts: MasterPort[];
     }>(`${API_BASE}/devices/${id}/ports`),
   getSoftware: (id: string, filter?: string) =>
