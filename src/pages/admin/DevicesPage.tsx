@@ -580,7 +580,7 @@ function DeviceDetailsModal({
   const [newMasterPortInput, setNewMasterPortInput] = useState('');
   const [newMasterServiceName, setNewMasterServiceName] = useState('');
   const [showAddMaster, setShowAddMaster] = useState(false);
-  const [deviceState, setDeviceState] = useState<Device>(device);
+  const [deviceState, setDeviceState] = useState<Device | null>(device);
   const [togglingFw, setTogglingFw] = useState(false);
 
   useEffect(() => {
@@ -599,12 +599,16 @@ function DeviceDetailsModal({
           : `Windows Defender Firewall turned OFF on ${device.name}.`,
         'success'
       );
-      setDeviceState((prev) => ({
-        ...prev,
-        firewallEnabled: enable,
-        firewallStatus: enable ? 'enabled' : 'disabled',
-        targetFirewallState: enable ? 'on' : 'off',
-      }));
+      setDeviceState((prev) =>
+        prev
+          ? {
+              ...prev,
+              firewallEnabled: enable,
+              firewallStatus: enable ? 'enabled' : 'disabled',
+              targetFirewallState: enable ? 'on' : 'off',
+            }
+          : null
+      );
     } catch (err: any) {
       toast(err.message || 'Failed to toggle Windows Defender Firewall', 'error');
     } finally {
@@ -666,7 +670,7 @@ function DeviceDetailsModal({
     setBlockingId(sw.id);
     try {
       await applicationRulesApi.unblockInstalled({
-        executable: sw.executable,
+        executable: sw.executable || `${sw.name}.exe`,
         deviceId: device.deviceId,
       });
       setSoftwareList((prev) =>
@@ -786,7 +790,8 @@ function DeviceDetailsModal({
     return true;
   });
 
-  const fwOn = deviceState.firewallEnabled !== false && deviceState.firewallStatus !== 'disabled';
+  const targetDevice = deviceState || device;
+  const fwOn = targetDevice ? (targetDevice.firewallEnabled !== false && targetDevice.firewallStatus !== 'disabled') : false;
 
   return (
     <Modal
@@ -1016,13 +1021,13 @@ function DeviceDetailsModal({
                     {fwOn ? 'Protected' : 'Risk Detected'}
                   </Badge>
                   <Button
-                    variant={fwOn ? 'outline' : 'success'}
+                    variant="ghost"
                     size="sm"
                     loading={togglingFw}
                     onClick={() => handleToggleFirewall(!fwOn)}
                     className={
                       fwOn
-                        ? 'text-xs text-rose-400 border-rose-500/30 hover:bg-rose-500/10'
+                        ? 'text-xs text-rose-400 border border-rose-500/30 hover:bg-rose-500/10'
                         : 'text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-semibold'
                     }
                   >

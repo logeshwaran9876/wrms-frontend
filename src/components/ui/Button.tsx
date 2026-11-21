@@ -4,6 +4,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
   size?: 'sm' | 'md';
   icon?: ReactNode;
+  loading?: boolean;
 }
 
 const sizeMap = {
@@ -15,8 +16,10 @@ export default function Button({
   variant = 'primary',
   size = 'md',
   icon,
+  loading = false,
   children,
   className = '',
+  disabled,
   ...props
 }: ButtonProps) {
   const variantClass = {
@@ -27,8 +30,16 @@ export default function Button({
   }[variant];
 
   return (
-    <button className={`btn ${variantClass} ${sizeMap[size]} ${className}`} {...props}>
-      {icon}
+    <button
+      className={`btn ${variantClass} ${sizeMap[size]} ${className}`}
+      disabled={disabled || loading}
+      {...props}
+    >
+      {loading ? (
+        <span className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent mr-1.5" />
+      ) : icon ? (
+        <span className="mr-1">{icon}</span>
+      ) : null}
       {children}
     </button>
   );

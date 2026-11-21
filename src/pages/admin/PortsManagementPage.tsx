@@ -380,7 +380,7 @@ export default function PortsManagementPage() {
               </Button>
             ) : (
               <Button
-                variant="success"
+                variant="ghost"
                 size="sm"
                 loading={togglingFirewall}
                 onClick={() => handleToggleFirewall(true)}
