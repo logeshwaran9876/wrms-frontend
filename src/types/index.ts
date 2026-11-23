@@ -236,6 +236,7 @@ export interface Notification {
 export interface DashboardStats {
   totalDevices: number;
   onlineDevices: number;
+  offlineDevices?: number;
   totalEmployees: number;
   totalDepartments: number;
   activePolicies: number;
@@ -250,8 +251,13 @@ export interface DashboardStats {
   totalComplaints?: number;
   complianceRate?: number;
   complaintRate?: number;
+  totalOpenPorts?: number;
+  allowedOpenPorts?: number;
+  masterAllowedPortsCount?: number;
   disallowedPorts?: number;
+  firewallEnabledCount?: number;
   firewallDisabledCount?: number;
+  firewallPercentage?: number;
 }
 
 export interface ComplaintCategoryItem {

@@ -93,20 +93,17 @@ export default function Sidebar({
         end={item.to === '/'}
         onClick={onClose}
         className={({ isActive }) =>
-          `flex ${
-            isInsideCapsule ? 'h-8 w-8 rounded-lg' : 'h-10 w-10 rounded-xl'
-          } items-center justify-center transition-all duration-200 relative ${
-            isActive
-              ? 'bg-theme-accent text-theme-accent-text font-bold shadow-md shadow-theme-accent/20'
-              : 'text-theme-body hover:text-theme-heading hover:bg-theme-surface/70'
+          `flex ${isInsideCapsule ? 'h-8 w-8 rounded-lg' : 'h-10 w-10 rounded-xl'
+          } items-center justify-center transition-all duration-200 relative ${isActive
+            ? 'bg-theme-accent text-theme-accent-text font-bold shadow-md shadow-theme-accent/20'
+            : 'text-theme-body hover:text-theme-heading hover:bg-theme-surface/70'
           }`
         }
       >
         {({ isActive }) => (
           <item.icon
-            className={`${isInsideCapsule ? 'h-4 w-4' : 'h-5 w-5'} ${
-              isActive ? 'text-theme-accent-text' : 'text-theme-body'
-            }`}
+            className={`${isInsideCapsule ? 'h-4 w-4' : 'h-5 w-5'} ${isActive ? 'text-theme-accent-text' : 'text-theme-body'
+              }`}
           />
         )}
       </NavLink>
@@ -133,10 +130,9 @@ export default function Sidebar({
         end={item.to === '/'}
         onClick={onClose}
         className={({ isActive }) =>
-          `group flex items-center justify-between rounded-2xl px-3 py-2 text-[13px] transition-all duration-200 ${
-            isActive
-              ? 'bg-theme-accent text-theme-accent-text font-bold shadow-md'
-              : 'text-theme-body hover:bg-theme-surface/70 hover:text-theme-heading font-medium'
+          `group flex items-center justify-between rounded-2xl px-3 py-2 text-[13px] transition-all duration-200 ${isActive
+            ? 'bg-theme-accent text-theme-accent-text font-bold shadow-md'
+            : 'text-theme-body hover:bg-theme-surface/70 hover:text-theme-heading font-medium'
           }`
         }
       >
@@ -144,11 +140,10 @@ export default function Sidebar({
           <>
             <div className="flex items-center gap-3 min-w-0">
               <div
-                className={`flex h-7 w-7 items-center justify-center rounded-lg transition-colors flex-shrink-0 ${
-                  isActive
+                className={`flex h-7 w-7 items-center justify-center rounded-lg transition-colors flex-shrink-0 ${isActive
                     ? 'border border-theme-accent-text/25 bg-theme-accent-text/10 text-theme-accent-text'
                     : 'text-theme-muted group-hover:text-theme-heading'
-                }`}
+                  }`}
               >
                 <item.icon className="h-4 w-4" />
               </div>
@@ -156,11 +151,10 @@ export default function Sidebar({
             </div>
             {item.badge && (
               <span
-                className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
-                  isActive
+                className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${isActive
                     ? 'bg-black/20 text-theme-accent-text'
                     : 'bg-theme-surface text-theme-accent border border-theme-border'
-                }`}
+                  }`}
               >
                 {item.badge}
               </span>
@@ -185,54 +179,63 @@ export default function Sidebar({
       <aside
         className={`fixed z-40 flex flex-col bg-theme-bg-deep border border-theme-border shadow-2xl transition-all duration-300 ease-in-out select-none
           ${
-            /* Mobile drawer */
-            open
-              ? 'inset-y-0 left-0 w-72 translate-x-0'
-              : '-translate-x-full lg:translate-x-0'
+          /* Mobile drawer */
+          open
+            ? 'inset-y-0 left-0 w-72 translate-x-0'
+            : '-translate-x-full lg:translate-x-0'
           }
           ${
-            /* Desktop floating capsule */
-            isEffectiveCollapsed
-              ? 'lg:top-3 lg:bottom-3 lg:left-3 lg:w-[68px] lg:rounded-[30px]'
-              : 'lg:top-3 lg:bottom-3 lg:left-3 lg:w-[260px] lg:rounded-[28px]'
+          /* Desktop floating capsule */
+          isEffectiveCollapsed
+            ? 'lg:top-3 lg:bottom-3 lg:left-3 lg:w-[68px] lg:rounded-[30px]'
+            : 'lg:top-3 lg:bottom-3 lg:left-3 lg:w-[260px] lg:rounded-[28px]'
           }
         `}
       >
+
+
         {/* Brand Header */}
         <div
           className={`flex items-center transition-all ${
             isEffectiveCollapsed
-              ? 'justify-center pt-4 pb-2'
-              : 'justify-between px-4 pt-4 pb-3'
+              ? 'justify-center px-2 pt-4 pb-3'
+              : 'px-4 pt-4 pb-3'
           }`}
         >
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-theme-surface border border-theme-border text-theme-accent shadow-sm flex-shrink-0">
-              <Shield className="h-5 w-5" />
+          {isEffectiveCollapsed ? (
+            /* Collapsed: Show Icon Only */
+            <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-theme-surface/60 border border-theme-border/70 p-1 shadow-xs overflow-hidden hover:border-theme-accent/40 transition">
+              <img
+                src="/wrms-icon.png"
+                alt="WRMS"
+                className="h-full w-full object-contain drop-shadow-xs"
+              />
             </div>
-            {!isEffectiveCollapsed && (
-              <div className="min-w-0">
-                <div className="flex items-center gap-1.5">
-                  <span className="font-bold tracking-tight text-base text-theme-heading">
-                    WRMS
-                  </span>
-                  <span className="rounded-full bg-theme-surface px-1.5 py-0.5 text-[9px] font-mono text-theme-accent border border-theme-border">
-                    v1.0
-                  </span>
-                </div>
-                
+          ) : (
+            /* Expanded: Show Full Logo */
+            <div className="flex items-center justify-between w-full min-w-0 gap-2">
+              <div className="flex items-center min-w-0 overflow-hidden">
+                <img
+                  src="/wrms-logo.png"
+                  alt="WRMS"
+                  className="h-8 sm:h-9 w-auto max-w-[180px] object-contain object-left drop-shadow-sm select-none"
+                />
               </div>
-            )}
-          </div>
+
+              <span className="shrink-0 rounded-full bg-theme-surface px-2 py-0.5 text-[9px] font-mono font-bold text-theme-accent border border-theme-border">
+                v1.0
+              </span>
+            </div>
+          )}
         </div>
+
 
         {/* Navigation Body */}
         <nav
-          className={`flex-1 ${
-            isEffectiveCollapsed
+          className={`flex-1 ${isEffectiveCollapsed
               ? 'overflow-visible py-1.5 space-y-2 flex flex-col items-center'
               : 'overflow-y-auto px-3 py-2 space-y-3 scrollbar-none'
-          }`}
+            }`}
         >
           {/* Top Standalone Dashboard Item */}
           <ul className={isEffectiveCollapsed ? 'w-full' : 'space-y-1'}>
@@ -346,9 +349,8 @@ export default function Sidebar({
 
               {/* Collapsed Horizontal Popover Pill matching Thor bottom right */}
               <div
-                className={`absolute left-full ml-3 bottom-0 ${
-                  flyoutOpen ? 'flex' : 'hidden group-hover:flex'
-                } items-center gap-2 rounded-2xl bg-theme-surface border border-theme-border p-1.5 shadow-2xl z-50 animate-scale-in`}
+                className={`absolute left-full ml-3 bottom-0 ${flyoutOpen ? 'flex' : 'hidden group-hover:flex'
+                  } items-center gap-2 rounded-2xl bg-theme-surface border border-theme-border p-1.5 shadow-2xl z-50 animate-scale-in`}
               >
                 <div className="w-2 h-2 bg-theme-surface border-l border-b border-theme-border rotate-45 -mr-1 z-10" />
                 <button
@@ -430,7 +432,7 @@ export default function Sidebar({
                 </div>
               </div>
 
-          
+
             </div>
           )}
         </div>

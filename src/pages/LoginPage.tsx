@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation, Navigate } from 'react-router-dom';
-import { Shield, Lock, Mail, Eye, EyeOff, AlertCircle, ArrowRight } from 'lucide-react';
+import { Lock, Mail, Eye, EyeOff, AlertCircle, ArrowRight } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
 export default function LoginPage() {
@@ -48,13 +48,16 @@ export default function LoginPage() {
 
       <div className="w-full max-w-md relative z-10 animate-fade-in">
         {/* Brand Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl border border-theme-border bg-theme-surface shadow-xl text-theme-heading mb-4">
-            <Shield className="h-7 w-7 text-theme-heading" />
+        <div className="text-center mb-8 flex flex-col items-center">
+          <div className="mb-2 flex items-center justify-center">
+            <img
+              src="/wrms-logo.png"
+              alt="WRMS - Windows Resource Management System"
+              className="h-16 sm:h-20 w-auto max-w-[340px] sm:max-w-[380px] object-contain drop-shadow-md"
+            />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-theme-heading">WRMS Console</h1>
-          <p className="text-xs text-theme-muted mt-1.5 font-medium tracking-wide">
-            Windows Restriction & Endpoint Policy Management
+          <p className="text-xs text-theme-muted font-medium tracking-wide">
+            Endpoint Policy & Windows Restriction Management Console
           </p>
         </div>
 

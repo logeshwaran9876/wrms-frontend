@@ -223,28 +223,25 @@ export const recentAdminActions = [
 ];
 
 export const websiteAccessTrend = [
-  { date: 'Nov 11', blocked: 142, allowed: 1840 },
-  { date: 'Nov 12', blocked: 168, allowed: 1920 },
-  { date: 'Nov 13', blocked: 134, allowed: 1750 },
-  { date: 'Nov 14', blocked: 189, allowed: 2100 },
-  { date: 'Nov 15', blocked: 98, allowed: 1340 },
-  { date: 'Nov 16', blocked: 76, allowed: 980 },
-  { date: 'Nov 17', blocked: 156, allowed: 1620 },
+  { date: 'Mon', allowed: 120, blocked: 12 },
+  { date: 'Tue', allowed: 145, blocked: 18 },
+  { date: 'Wed', allowed: 160, blocked: 14 },
+  { date: 'Thu', allowed: 138, blocked: 22 },
+  { date: 'Fri', allowed: 175, blocked: 19 },
+  { date: 'Sat', allowed: 65, blocked: 6 },
+  { date: 'Sun', allowed: 80, blocked: 8 },
 ];
 
 export const blockedCategories = [
-  { category: 'Social Media', count: 420 },
-  { category: 'Entertainment', count: 312 },
-  { category: 'Gaming', count: 185 },
-  { category: 'Streaming', count: 144 },
-  { category: 'Other', count: 78 },
+  { category: 'Restricted Websites', count: 4 },
+  { category: 'Blocked Applications', count: 2 },
+  { category: 'USB Mass Storage', count: 1 },
+  { category: 'Browser Hardening', count: 5 },
 ];
 
 export const policyComplianceData = [
-  { department: 'Finance', compliance: 100, devices: 2 },
-  { department: 'Development', compliance: 100, devices: 2 },
-  { department: 'HR', compliance: 100, devices: 1 },
-  { department: 'Sales', compliance: 75, devices: 2 },
-  { department: 'Marketing', compliance: 100, devices: 2 },
-  { department: 'Admin', compliance: 0, devices: 1 },
+  { department: 'Fleet Agent Sync', compliance: 100, devices: 1 },
+  { department: 'Firewall Protection', compliance: 100, devices: 1 },
+  { department: 'Port Whitelist Adherence', compliance: 8, devices: 1 },
+  { department: 'USB Storage Lockdown', compliance: 100, devices: 1 },
 ];
