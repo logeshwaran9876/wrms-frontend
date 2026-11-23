@@ -392,6 +392,7 @@ export default function DashboardPage() {
                 <XAxis dataKey="label" tick={{ fontSize: 11, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 11, fill: '#94a3b8' }} domain={[0, 100]} axisLine={false} tickLine={false} />
                 <Tooltip
+                  cursor={false}
                   contentStyle={{
                     backgroundColor: '#161920',
                     border: '1px solid rgba(255, 255, 255, 0.12)',

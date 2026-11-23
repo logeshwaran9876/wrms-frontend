@@ -636,7 +636,7 @@ export default function ReportsPage() {
                     <CartesianGrid strokeDasharray="3 3" stroke="var(--theme-border)" opacity={0.4} />
                     <XAxis dataKey="date" tick={{ fontSize: 11, fill: 'var(--theme-text-muted)' }} axisLine={false} tickLine={false} />
                     <YAxis tick={{ fontSize: 11, fill: 'var(--theme-text-muted)' }} axisLine={false} tickLine={false} />
-                    <Tooltip content={<CustomChartTooltip />} />
+                    <Tooltip cursor={false} content={<CustomChartTooltip />} />
                     <Legend wrapperStyle={{ fontSize: '11px', color: 'var(--theme-text-muted)' }} />
                     <Area type="monotone" dataKey="allowed" stroke="var(--theme-accent)" strokeWidth={2} fillOpacity={1} fill="url(#colorAllowed)" name="Allowed In-Policy" />
                     <Area type="monotone" dataKey="blocked" stroke="#ef4444" strokeWidth={2} fillOpacity={1} fill="url(#colorBlocked)" name="Blocked Sinkholes" />
@@ -666,7 +666,7 @@ export default function ReportsPage() {
                     <CartesianGrid strokeDasharray="3 3" stroke="var(--theme-border)" opacity={0.4} />
                     <XAxis dataKey="name" tick={{ fontSize: 11, fill: 'var(--theme-text-muted)' }} axisLine={false} tickLine={false} />
                     <YAxis tick={{ fontSize: 11, fill: 'var(--theme-text-muted)' }} axisLine={false} tickLine={false} />
-                    <Tooltip content={<CustomChartTooltip />} />
+                    <Tooltip cursor={false} content={<CustomChartTooltip />} />
                     <Bar dataKey="blocked" name="Terminated Processes" radius={[6, 6, 0, 0]} fill="var(--theme-accent)">
                       {['#ef4444', '#f59e0b', '#3b82f6', '#10b981', '#8b5cf6'].map((color, index) => (
                         <Cell key={`cell-${index}`} fill={color} />
@@ -693,7 +693,7 @@ export default function ReportsPage() {
                     <CartesianGrid strokeDasharray="3 3" stroke="var(--theme-border)" opacity={0.4} />
                     <XAxis dataKey="day" tick={{ fontSize: 11, fill: 'var(--theme-text-muted)' }} axisLine={false} tickLine={false} />
                     <YAxis tick={{ fontSize: 11, fill: 'var(--theme-text-muted)' }} axisLine={false} tickLine={false} />
-                    <Tooltip content={<CustomChartTooltip />} />
+                    <Tooltip cursor={false} content={<CustomChartTooltip />} />
                     <Legend wrapperStyle={{ fontSize: '11px', color: 'var(--theme-text-muted)' }} />
                     <Bar dataKey="blocked" name="Blocked Mass Storage" fill="#ef4444" radius={[6, 6, 0, 0]} />
                     <Bar dataKey="allowedHID" name="Allowed HID Devices" fill="var(--theme-accent)" radius={[6, 6, 0, 0]} />
@@ -716,7 +716,7 @@ export default function ReportsPage() {
                     <CartesianGrid strokeDasharray="3 3" stroke="var(--theme-border)" opacity={0.4} />
                     <XAxis dataKey="browser" tick={{ fontSize: 11, fill: 'var(--theme-text-muted)' }} axisLine={false} tickLine={false} />
                     <YAxis tick={{ fontSize: 11, fill: 'var(--theme-text-muted)' }} domain={[0, 100]} axisLine={false} tickLine={false} />
-                    <Tooltip content={<CustomChartTooltip />} />
+                    <Tooltip cursor={false} content={<CustomChartTooltip />} />
                     <Bar dataKey="score" name="Policy Compliance %" radius={[6, 6, 0, 0]} fill="var(--theme-accent)" />
                   </BarChart>
                 </ResponsiveContainer>
@@ -728,7 +728,7 @@ export default function ReportsPage() {
                     <CartesianGrid strokeDasharray="3 3" stroke="var(--theme-border)" opacity={0.4} />
                     <XAxis dataKey="department" tick={{ fontSize: 11, fill: 'var(--theme-text-muted)' }} axisLine={false} tickLine={false} />
                     <YAxis tick={{ fontSize: 11, fill: 'var(--theme-text-muted)' }} domain={[0, 100]} axisLine={false} tickLine={false} />
-                    <Tooltip content={<CustomChartTooltip />} />
+                    <Tooltip cursor={false} content={<CustomChartTooltip />} />
                     <Bar dataKey="compliance" name="Compliance Rate %" radius={[6, 6, 0, 0]} fill="#10b981">
                       {complianceData.map((entry, index) => (
                         <Cell
