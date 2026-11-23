@@ -28,6 +28,27 @@ import { useToast } from '@/components/ui/Toast';
 import { devicesApi } from '@/lib/api';
 import type { Device, MasterPort } from '@/types';
 
+function parsePortProcess(raw?: string) {
+  if (!raw || !raw.trim() || raw === 'Listening Service') {
+    return { app: 'Listening Service', details: null, isApp: false };
+  }
+  const match = raw.match(/^([^(·]+?)(?:\s*(?:[(·])\s*(.*?)[)]?\s*)?$/);
+  if (match && match[2]) {
+    const app = match[1].trim();
+    const details = match[2].trim().replace(/\)$/, '');
+    const isExe =
+      app.toLowerCase().endsWith('.exe') ||
+      app.toLowerCase().includes('kernel') ||
+      app.toLowerCase().includes('system');
+    return { app, details, isApp: isExe };
+  }
+  const isExe =
+    raw.toLowerCase().endsWith('.exe') ||
+    raw.toLowerCase().includes('kernel') ||
+    raw.toLowerCase().includes('system');
+  return { app: raw.trim(), details: null, isApp: isExe };
+}
+
 export default function PortsManagementPage() {
   const { toast } = useToast();
   const [devices, setDevices] = useState<Device[]>([]);
@@ -68,9 +89,11 @@ export default function PortsManagementPage() {
     setLoading(true);
     try {
       const data = await devicesApi.getAll();
-      const list = Array.isArray(data) ? data : [];
+      const list = Array.isArray(data)
+        ? data.filter((d: Device) => d.status !== 'uninstalled')
+        : [];
       setDevices(list);
-      if (list.length > 0 && !selectedDeviceId) {
+      if (list.length > 0 && (!selectedDeviceId || !list.some((d) => (d.id || d.deviceId) === selectedDeviceId))) {
         setSelectedDeviceId(list[0].id || list[0].deviceId);
       }
     } catch {
@@ -90,7 +113,8 @@ export default function PortsManagementPage() {
   };
 
   const selectedDevice = useMemo(() => {
-    return devices.find((d) => d.id === selectedDeviceId || d.deviceId === selectedDeviceId) || devices[0] || null;
+    const active = devices.filter((d) => d.status !== 'uninstalled');
+    return active.find((d) => d.id === selectedDeviceId || d.deviceId === selectedDeviceId) || active[0] || null;
   }, [devices, selectedDeviceId]);
 
   // Load ports for selected device
@@ -333,11 +357,16 @@ export default function PortsManagementPage() {
                   onChange={(e) => setSelectedDeviceId(e.target.value)}
                   className="rounded-lg border border-theme-border bg-theme-surface-subtle px-3 py-1.5 text-sm font-bold text-theme-heading focus:border-theme-accent focus:outline-none cursor-pointer"
                 >
-                  {devices.map((d) => (
-                    <option key={d.id || d.deviceId} value={d.id || d.deviceId}>
-                      {d.name} ({d.employeeName || 'Workstation'})
-                    </option>
-                  ))}
+                  {devices
+                    .filter((d) => d.status !== 'uninstalled')
+                    .map((d) => (
+                      <option key={d.id || d.deviceId} value={d.id || d.deviceId}>
+                        {d.name} ({d.employeeName || 'Workstation'})
+                      </option>
+                    ))}
+                  {devices.filter((d) => d.status !== 'uninstalled').length === 0 && (
+                    <option value="" disabled>No active workstations found</option>
+                  )}
                 </select>
               </div>
               <div className="mt-1 flex flex-wrap items-center gap-3 text-xs text-theme-muted">
@@ -593,12 +622,49 @@ export default function PortsManagementPage() {
               },
               {
                 key: 'processName',
-                header: 'Listening Service / Process',
-                render: (p) => (
-                  <span className="text-xs font-medium text-theme-heading">
-                    {p.processName || 'Listening Service'}
-                  </span>
-                ),
+                header: 'Running Application / Service',
+                render: (p) => {
+                  const { app, details, isApp } = parsePortProcess(p.processName);
+                  const isBlocked = p.isBlocked === true;
+                  return (
+                    <div className="flex items-center gap-2.5 py-0.5">
+                      <div
+                        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border ${
+                          isBlocked
+                            ? 'border-rose-500/20 bg-rose-500/10 text-rose-400'
+                            : isApp
+                            ? 'border-sky-500/20 bg-sky-500/10 text-sky-400'
+                            : 'border-slate-500/20 bg-slate-500/10 text-slate-400'
+                        }`}
+                      >
+                        {isBlocked ? (
+                          <Ban className="h-3.5 w-3.5" />
+                        ) : isApp ? (
+                          <Activity className="h-3.5 w-3.5" />
+                        ) : (
+                          <Radio className="h-3.5 w-3.5" />
+                        )}
+                      </div>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="font-mono text-xs font-bold text-theme-heading truncate">
+                            {app}
+                          </span>
+                          {isApp && (
+                            <span className="text-[10px] font-bold uppercase px-1.5 py-0.2 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20">
+                              Process
+                            </span>
+                          )}
+                        </div>
+                        {details && (
+                          <p className="text-[11px] text-theme-muted truncate max-w-xs" title={details}>
+                            {details}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  );
+                },
               },
               {
                 key: 'status',

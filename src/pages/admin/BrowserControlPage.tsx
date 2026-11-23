@@ -86,7 +86,7 @@ export default function BrowserControlPage() {
         devicesApi.getAll().catch(() => []),
       ]);
       setRules(Array.isArray(fetchedRules) ? fetchedRules : []);
-      setDevices(Array.isArray(fetchedDevices) ? fetchedDevices : []);
+      setDevices(Array.isArray(fetchedDevices) ? fetchedDevices.filter((d: Device) => d.status !== 'uninstalled') : []);
       if (isManual) toast('5-Browser policies and workstations refreshed');
     } catch {
       toast('Failed to load browser policies', 'error');

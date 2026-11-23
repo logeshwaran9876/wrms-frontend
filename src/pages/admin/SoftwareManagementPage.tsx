@@ -48,9 +48,11 @@ export default function SoftwareManagementPage() {
     setLoading(true);
     try {
       const data = await devicesApi.getAll();
-      const list = Array.isArray(data) ? data : [];
+      const list = Array.isArray(data)
+        ? data.filter((d: Device) => d.status !== 'uninstalled')
+        : [];
       setDevices(list);
-      if (list.length > 0 && !selectedDeviceId) {
+      if (list.length > 0 && (!selectedDeviceId || !list.some((d) => (d.id || d.deviceId) === selectedDeviceId))) {
         setSelectedDeviceId(list[0].id || list[0].deviceId);
       }
     } catch {
@@ -61,7 +63,8 @@ export default function SoftwareManagementPage() {
   };
 
   const selectedDevice = useMemo(() => {
-    return devices.find((d) => d.id === selectedDeviceId || d.deviceId === selectedDeviceId) || devices[0] || null;
+    const active = devices.filter((d) => d.status !== 'uninstalled');
+    return active.find((d) => d.id === selectedDeviceId || d.deviceId === selectedDeviceId) || active[0] || null;
   }, [devices, selectedDeviceId]);
 
   useEffect(() => {
@@ -192,11 +195,16 @@ export default function SoftwareManagementPage() {
                   onChange={(e) => setSelectedDeviceId(e.target.value)}
                   className="rounded-lg border border-theme-border bg-theme-surface-subtle px-3 py-1.5 text-sm font-bold text-theme-heading focus:border-theme-accent focus:outline-none cursor-pointer"
                 >
-                  {devices.map((d) => (
-                    <option key={d.id || d.deviceId} value={d.id || d.deviceId}>
-                      {d.name} ({d.employeeName || 'Workstation'})
-                    </option>
-                  ))}
+                  {devices
+                    .filter((d) => d.status !== 'uninstalled')
+                    .map((d) => (
+                      <option key={d.id || d.deviceId} value={d.id || d.deviceId}>
+                        {d.name} ({d.employeeName || 'Workstation'})
+                      </option>
+                    ))}
+                  {devices.filter((d) => d.status !== 'uninstalled').length === 0 && (
+                    <option value="" disabled>No active workstations found</option>
+                  )}
                 </select>
               </div>
               <div className="mt-1 flex flex-wrap items-center gap-3 text-xs text-theme-muted">

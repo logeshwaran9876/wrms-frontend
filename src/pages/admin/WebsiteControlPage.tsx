@@ -38,7 +38,7 @@ export default function WebsiteControlPage() {
       devicesApi.getAll().catch(() => []),
     ]).then(([rulesData, devs]) => {
       if (Array.isArray(rulesData)) setRules(rulesData);
-      if (Array.isArray(devs)) setDeviceList(devs);
+      if (Array.isArray(devs)) setDeviceList(devs.filter((d: Device) => d.status !== 'uninstalled'));
     });
   }, []);
 
