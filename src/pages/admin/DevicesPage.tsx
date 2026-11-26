@@ -5,29 +5,16 @@ import {
   Wifi,
   WifiOff,
   RefreshCw,
-  MoreVertical,
-  Pencil,
-  Upload,
-  Trash2,
   Globe,
   CheckCircle2,
   Ban,
   RotateCcw,
   ShieldCheck,
-  Search,
-  ExternalLink,
-  Eye,
   User as UserIcon,
-  Mail,
-  Clock,
   Usb,
-  HardDrive,
   BookOpen,
   Terminal,
-  Laptop,
-  ShieldOff,
   Chrome,
-  Settings,
   Flame,
   Shield,
   Lock,
@@ -46,7 +33,17 @@ import { useToast } from '@/components/ui/Toast';
 import { devices as initialDevices, policies as initialPolicies } from '@/data/mockData';
 import { devicesApi, policiesApi, usersApi, applicationRulesApi } from '@/lib/api';
 import { timeAgo, formatDate } from '@/lib/format';
-import type { Device, Policy, User, DeviceBrowserRuleSummary, DeviceSoftware } from '@/types';
+import type { Device, Policy, User, DeviceBrowserRuleSummary, DeviceSoftware, DailyAppUsageResponse, DailyAppUsageItem } from '@/types';
+
+function formatDeviceUsageDuration(totalSeconds: number): string {
+  const sec = Math.max(0, Math.floor(totalSeconds || 0));
+  if (sec < 60) return `${sec}s`;
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  const s = sec % 60;
+  if (h > 0) return `${h}h ${String(m).padStart(2, '0')}m`;
+  return `${m}m ${String(s).padStart(2, '0')}s`;
+}
 
 const statusConfig: Record<string, { variant: 'success' | 'warning' | 'error' | 'neutral'; label: string }> = {
   applied: { variant: 'success', label: 'Applied' },
@@ -571,6 +568,7 @@ function DeviceDetailsModal({
     masterPorts: any[];
   } | null>(null);
   const [softwareList, setSoftwareList] = useState<DeviceSoftware[]>([]);
+  const [appUsageData, setAppUsageData] = useState<DailyAppUsageResponse | null>(null);
   const [softwareFilter, setSoftwareFilter] = useState<'all' | 'frequently_used' | 'uninstalled'>('all');
   const [softwareSearch, setSoftwareSearch] = useState('');
   const [blockingId, setBlockingId] = useState<string | null>(null);
@@ -620,6 +618,9 @@ function DeviceDetailsModal({
     if (!device) return;
     setActiveTab(initialTab || 'overview');
 
+    const now = new Date();
+    const todayLocal = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
     Promise.all([
       devicesApi.getPorts(device.deviceId).catch(() => ({
         deviceId: device.deviceId,
@@ -634,9 +635,11 @@ function DeviceDetailsModal({
         total: 0,
         software: [],
       })),
-    ]).then(([pData, sData]) => {
+      devicesApi.getAppUsage(device.deviceId, { date: todayLocal, range: 'today' }).catch(() => null),
+    ]).then(([pData, sData, uData]) => {
       if (pData) setPortsData(pData);
       if (sData?.software) setSoftwareList(sData.software);
+      setAppUsageData(uData);
     });
   }, [device]);
 
@@ -1288,7 +1291,7 @@ function DeviceDetailsModal({
                     : 'border border-theme-border text-theme-muted hover:bg-theme-surface'
                     }`}
                 >
-                  Frequently Used
+                  Today's Usage ({appUsageData?.apps?.length || 0})
                 </button>
                 <button
                   type="button"
@@ -1311,76 +1314,150 @@ function DeviceDetailsModal({
               />
             </div>
 
-            <div className="rounded-xl border border-theme-border bg-theme-surface overflow-hidden">
-              <div className="max-h-64 overflow-y-auto">
-                <table className="w-full text-xs">
-                  <thead className="bg-theme-bg-deep text-theme-muted border-b border-theme-border sticky top-0">
-                    <tr>
-                      <th className="px-3.5 py-2 text-left">Application</th>
-                      <th className="px-3.5 py-2 text-left">Publisher</th>
-                      <th className="px-3.5 py-2 text-left">Version</th>
-                      <th className="px-3.5 py-2 text-center">Usage Count</th>
-                      <th className="px-3.5 py-2 text-right">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-theme-border-subtle">
-                    {filteredSoftware.length === 0 ? (
+            {softwareFilter === 'frequently_used' ? (
+              <div className="space-y-2.5">
+                <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-theme-border bg-theme-bg-deep px-3 py-2 text-xs">
+                  <span className="font-semibold text-theme-heading">
+                    Active Screen Time ({appUsageData?.date || 'Today'}):{' '}
+                    <span className="font-mono text-amber-400">
+                      {formatDeviceUsageDuration(appUsageData?.totalActiveSeconds || 0)}
+                    </span>
+                  </span>
+                  <span className="font-mono text-theme-muted">
+                    Idle: {formatDeviceUsageDuration(appUsageData?.totalIdleSeconds || 0)}
+                  </span>
+                </div>
+                <div className="rounded-xl border border-theme-border bg-theme-surface overflow-hidden">
+                  <div className="max-h-60 overflow-y-auto">
+                    <table className="w-full text-xs">
+                      <thead className="bg-theme-bg-deep text-theme-muted border-b border-theme-border sticky top-0">
+                        <tr>
+                          <th className="px-3.5 py-2 text-left">Application</th>
+                          <th className="px-3.5 py-2 text-left">Active Time</th>
+                          <th className="px-3.5 py-2 text-center">Launches</th>
+                          <th className="px-3.5 py-2 text-right">Status</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-theme-border-subtle">
+                        {(appUsageData?.apps || []).filter((a: DailyAppUsageItem) => {
+                          if (!softwareSearch) return true;
+                          const q = softwareSearch.toLowerCase();
+                          return a.appName.toLowerCase().includes(q) || a.executable.toLowerCase().includes(q);
+                        }).length === 0 ? (
+                          <tr>
+                            <td colSpan={4} className="py-6 text-center text-xs text-theme-muted">
+                              No active foreground usage recorded today yet.
+                            </td>
+                          </tr>
+                        ) : (
+                          (appUsageData?.apps || [])
+                            .filter((a: DailyAppUsageItem) => {
+                              if (!softwareSearch) return true;
+                              const q = softwareSearch.toLowerCase();
+                              return a.appName.toLowerCase().includes(q) || a.executable.toLowerCase().includes(q);
+                            })
+                            .map((app) => (
+                              <tr key={app.executable} className="hover:bg-theme-surface-hover">
+                                <td className="px-3.5 py-2.5 font-semibold text-theme-heading">
+                                  <div>
+                                    <p>{app.appName}</p>
+                                    <p className="font-mono text-[10px] text-theme-muted">{app.executable}</p>
+                                  </div>
+                                </td>
+                                <td className="px-3.5 py-2.5 font-mono font-bold text-amber-400">
+                                  {formatDeviceUsageDuration(app.activeSeconds)}
+                                  <span className="ml-1.5 text-[10px] font-normal text-theme-muted">
+                                    ({app.percentage ?? 0}%)
+                                  </span>
+                                </td>
+                                <td className="px-3.5 py-2.5 text-center font-mono text-theme-heading">
+                                  {app.launchCount}
+                                </td>
+                                <td className="px-3.5 py-2.5 text-right">
+                                  <Badge variant={app.isBlocked ? 'error' : 'success'} dot>
+                                    {app.isBlocked ? 'Blocked' : 'Active'}
+                                  </Badge>
+                                </td>
+                              </tr>
+                            ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="rounded-xl border border-theme-border bg-theme-surface overflow-hidden">
+                <div className="max-h-64 overflow-y-auto">
+                  <table className="w-full text-xs">
+                    <thead className="bg-theme-bg-deep text-theme-muted border-b border-theme-border sticky top-0">
                       <tr>
-                        <td colSpan={5} className="py-6 text-center text-xs text-theme-muted">
-                          No matching applications found on workstation.
-                        </td>
+                        <th className="px-3.5 py-2 text-left">Application</th>
+                        <th className="px-3.5 py-2 text-left">Publisher</th>
+                        <th className="px-3.5 py-2 text-left">Version</th>
+                        <th className="px-3.5 py-2 text-center">Usage Count</th>
+                        <th className="px-3.5 py-2 text-right">Action</th>
                       </tr>
-                    ) : (
-                      filteredSoftware.map((sw) => (
-                        <tr key={sw.id} className="hover:bg-theme-surface-hover">
-                          <td className="px-3.5 py-2.5 font-semibold text-theme-heading">
-                            <div className="flex items-center gap-2">
-                              <AppWindow className="h-4 w-4 text-theme-muted" />
-                              <div>
-                                <p>{sw.name}</p>
-                                <p className="font-mono text-[10px] text-theme-muted">{sw.executable || 'app.exe'}</p>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="px-3.5 py-2.5 text-theme-muted">{sw.publisher || 'Unknown'}</td>
-                          <td className="px-3.5 py-2.5 font-mono text-[11px] text-theme-muted">{sw.version}</td>
-                          <td className="px-3.5 py-2.5 text-center font-bold text-theme-heading">
-                            {sw.executionCount > 0 ? (
-                              <span className="rounded bg-theme-bg-deep px-2 py-0.5 text-xs text-theme-heading border border-theme-border">
-                                {sw.executionCount} launches
-                              </span>
-                            ) : (
-                              <span className="text-theme-muted text-[11px]">—</span>
-                            )}
-                          </td>
-                          <td className="px-3.5 py-2.5 text-right">
-                            {sw.isBlocked ? (
-                              <Button
-                                size="sm"
-                                variant="secondary"
-                                disabled={blockingId === sw.id}
-                                onClick={() => handleUnblockApp(sw)}
-                              >
-                                {blockingId === sw.id ? 'Unblocking...' : 'Unblock'}
-                              </Button>
-                            ) : (
-                              <Button
-                                size="sm"
-                                variant="danger"
-                                disabled={blockingId === sw.id}
-                                onClick={() => handleBlockApp(sw)}
-                              >
-                                {blockingId === sw.id ? 'Blocking...' : 'Block App'}
-                              </Button>
-                            )}
+                    </thead>
+                    <tbody className="divide-y divide-theme-border-subtle">
+                      {filteredSoftware.length === 0 ? (
+                        <tr>
+                          <td colSpan={5} className="py-6 text-center text-xs text-theme-muted">
+                            No matching applications found on workstation.
                           </td>
                         </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
+                      ) : (
+                        filteredSoftware.map((sw) => (
+                          <tr key={sw.id} className="hover:bg-theme-surface-hover">
+                            <td className="px-3.5 py-2.5 font-semibold text-theme-heading">
+                              <div className="flex items-center gap-2">
+                                <AppWindow className="h-4 w-4 text-theme-muted" />
+                                <div>
+                                  <p>{sw.name}</p>
+                                  <p className="font-mono text-[10px] text-theme-muted">{sw.executable || 'app.exe'}</p>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-3.5 py-2.5 text-theme-muted">{sw.publisher || 'Unknown'}</td>
+                            <td className="px-3.5 py-2.5 font-mono text-[11px] text-theme-muted">{sw.version}</td>
+                            <td className="px-3.5 py-2.5 text-center font-bold text-theme-heading">
+                              {sw.executionCount > 0 ? (
+                                <span className="rounded bg-theme-bg-deep px-2 py-0.5 text-xs text-theme-heading border border-theme-border">
+                                  {sw.executionCount} launches
+                                </span>
+                              ) : (
+                                <span className="text-theme-muted text-[11px]">—</span>
+                              )}
+                            </td>
+                            <td className="px-3.5 py-2.5 text-right">
+                              {sw.isBlocked ? (
+                                <Button
+                                  size="sm"
+                                  variant="secondary"
+                                  disabled={blockingId === sw.id}
+                                  onClick={() => handleUnblockApp(sw)}
+                                >
+                                  {blockingId === sw.id ? 'Unblocking...' : 'Unblock'}
+                                </Button>
+                              ) : (
+                                <Button
+                                  size="sm"
+                                  variant="danger"
+                                  disabled={blockingId === sw.id}
+                                  onClick={() => handleBlockApp(sw)}
+                                >
+                                  {blockingId === sw.id ? 'Blocking...' : 'Block App'}
+                                </Button>
+                              )}
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         )}
       </div>

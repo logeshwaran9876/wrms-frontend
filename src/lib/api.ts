@@ -3,6 +3,7 @@ import type {
   Department,
   Device,
   DeviceSoftware,
+  DailyAppUsageResponse,
   MasterPort,
   WebsiteRule,
   ApplicationRule,
@@ -152,6 +153,13 @@ export const devicesApi = {
       total: number;
       software: DeviceSoftware[];
     }>(`${API_BASE}/devices/${id}/software${filter ? `?filter=${filter}` : ''}`),
+  getAppUsage: (id: string, params?: { date?: string; range?: 'today' | '7d' | '30d' }) => {
+    const query = new URLSearchParams();
+    if (params?.date) query.set('date', params.date);
+    if (params?.range) query.set('range', params.range);
+    const qs = query.toString();
+    return fetchJson<DailyAppUsageResponse>(`${API_BASE}/devices/${id}/app-usage${qs ? `?${qs}` : ''}`);
+  },
   getMasterPorts: () => fetchJson<MasterPort[]>(`${API_BASE}/devices/master-ports`),
   saveMasterPort: (data: Partial<MasterPort>) =>
     fetchJson<MasterPort>(`${API_BASE}/devices/master-ports`, {

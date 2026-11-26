@@ -95,6 +95,29 @@ export interface DeviceSoftware {
   isBlocked?: boolean;
 }
 
+export interface DailyAppUsageItem {
+  executable: string;
+  appName: string;
+  publisher: string;
+  activeSeconds: number;
+  launchCount: number;
+  firstUsedAt?: string;
+  lastUsedAt?: string;
+  percentage?: number;
+  isBlocked?: boolean;
+}
+
+export interface DailyAppUsageResponse {
+  deviceId: string;
+  date: string;
+  range: 'today' | '7d' | '30d';
+  totalActiveSeconds: number;
+  totalIdleSeconds: number;
+  lastUpdatedAt: string | null;
+  availableDates: string[];
+  apps: DailyAppUsageItem[];
+}
+
 export interface MasterPort {
   port: number;
   protocol: string;

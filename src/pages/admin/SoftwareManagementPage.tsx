@@ -2,22 +2,16 @@ import { useState, useEffect, useMemo } from 'react';
 import {
   Layers,
   AppWindow,
-  Monitor,
-  Search,
   RefreshCw,
   Ban,
   CheckCircle2,
   Clock,
-  Sparkles,
-  Shield,
-  ShieldAlert,
   Flame,
-  Activity,
   MapPin,
   Globe,
-  Trash2,
   History,
-  FileText,
+  Calendar,
+  Timer,
 } from 'lucide-react';
 import PageHeader from '@/components/ui/PageHeader';
 import Card from '@/components/ui/Card';
@@ -27,7 +21,33 @@ import SearchInput from '@/components/ui/SearchInput';
 import { DataTable } from '@/components/ui/DataTable';
 import { useToast } from '@/components/ui/Toast';
 import { devicesApi, applicationRulesApi } from '@/lib/api';
-import type { Device, DeviceSoftware } from '@/types';
+import type { Device, DeviceSoftware, DailyAppUsageResponse, DailyAppUsageItem } from '@/types';
+
+function getLocalDateString(offsetDays = 0): string {
+  const d = new Date();
+  d.setDate(d.getDate() - offsetDays);
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+}
+
+function formatDuration(totalSeconds: number): string {
+  const sec = Math.max(0, Math.floor(totalSeconds || 0));
+  if (sec < 60) return `${sec}s`;
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  const s = sec % 60;
+  if (h > 0) return `${h}h ${String(m).padStart(2, '0')}m`;
+  return `${m}m ${String(s).padStart(2, '0')}s`;
+}
+
+function formatShortTime(iso?: string): string {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '—';
+  return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
 
 export default function SoftwareManagementPage() {
   const { toast } = useToast();
@@ -36,6 +56,9 @@ export default function SoftwareManagementPage() {
   const [loading, setLoading] = useState(true);
   const [softwareLoading, setSoftwareLoading] = useState(false);
   const [softwareList, setSoftwareList] = useState<DeviceSoftware[]>([]);
+  const [usageData, setUsageData] = useState<DailyAppUsageResponse | null>(null);
+  const [selectedDate, setSelectedDate] = useState<string>(() => getLocalDateString(0));
+  const [dateRange, setDateRange] = useState<'today' | '7d'>('today');
   const [activeTab, setActiveTab] = useState<'frequently_used' | 'installed' | 'uninstalled'>('frequently_used');
   const [search, setSearch] = useState('');
   const [workingApp, setWorkingApp] = useState<string | null>(null);
@@ -69,56 +92,56 @@ export default function SoftwareManagementPage() {
 
   useEffect(() => {
     if (!selectedDevice) return;
-    loadSoftware(selectedDevice.deviceId || selectedDevice.id);
-  }, [selectedDevice?.deviceId, selectedDevice?.id]);
+    loadTelemetry(selectedDevice.deviceId || selectedDevice.id, selectedDate, dateRange);
+  }, [selectedDevice?.deviceId, selectedDevice?.id, selectedDate, dateRange]);
 
-  const loadSoftware = async (devKey: string) => {
+  const loadTelemetry = async (devKey: string, date: string, range: 'today' | '7d') => {
     setSoftwareLoading(true);
     try {
-      const data = await devicesApi.getSoftware(devKey);
-      if (data && Array.isArray(data.software)) {
-        setSoftwareList(data.software);
-      } else {
-        setSoftwareList([]);
-      }
+      const [swRes, usageRes] = await Promise.all([
+        devicesApi.getSoftware(devKey).catch(() => ({ deviceId: devKey, total: 0, software: [] })),
+        devicesApi.getAppUsage(devKey, { date, range }).catch(() => null),
+      ]);
+      setSoftwareList(Array.isArray(swRes?.software) ? swRes.software : []);
+      setUsageData(usageRes);
     } catch {
-      toast('Failed to fetch software inventory', 'error');
+      toast('Failed to fetch software usage telemetry', 'error');
     } finally {
       setSoftwareLoading(false);
     }
   };
 
-  const handleBlockApp = async (app: DeviceSoftware) => {
+  const handleBlock = async (appName: string, executable: string, publisher: string) => {
     if (!selectedDevice) return;
-    const exe = app.executable || `${app.name.toLowerCase().replace(/\s+/g, '')}.exe`;
+    const exe = executable || `${appName.toLowerCase().replace(/\s+/g, '')}.exe`;
     setWorkingApp(exe);
     try {
       await applicationRulesApi.blockInstalled({
-        appName: app.name,
+        appName,
         executable: exe,
-        publisher: app.publisher,
+        publisher: publisher || 'Unknown',
         scope: 'device',
         scopeTarget: selectedDevice.deviceId,
       });
-      toast(`${app.name} (${exe}) blocked and restricted on ${selectedDevice.name}.`, 'success');
-      loadSoftware(selectedDevice.deviceId || selectedDevice.id);
+      toast(`${appName} (${exe}) blocked and restricted on ${selectedDevice.name}.`, 'success');
+      loadTelemetry(selectedDevice.deviceId || selectedDevice.id, selectedDate, dateRange);
     } catch {
-      toast(`Failed to block application ${app.name}`, 'error');
+      toast(`Failed to block application ${appName}`, 'error');
     } finally {
       setWorkingApp(null);
     }
   };
 
-  const handleUnblockApp = async (app: DeviceSoftware) => {
+  const handleUnblock = async (appName: string, executable: string) => {
     if (!selectedDevice) return;
-    const exe = app.executable || `${app.name.toLowerCase().replace(/\s+/g, '')}.exe`;
+    const exe = executable || `${appName.toLowerCase().replace(/\s+/g, '')}.exe`;
     setWorkingApp(exe);
     try {
       await applicationRulesApi.unblockInstalled({ executable: exe });
-      toast(`${app.name} (${exe}) unblocked on ${selectedDevice.name}.`, 'success');
-      loadSoftware(selectedDevice.deviceId || selectedDevice.id);
+      toast(`${appName} (${exe}) unblocked on ${selectedDevice.name}.`, 'success');
+      loadTelemetry(selectedDevice.deviceId || selectedDevice.id, selectedDate, dateRange);
     } catch {
-      toast(`Failed to unblock application ${app.name}`, 'error');
+      toast(`Failed to unblock application ${appName}`, 'error');
     } finally {
       setWorkingApp(null);
     }
@@ -126,27 +149,23 @@ export default function SoftwareManagementPage() {
 
   // Metrics
   const installedApps = useMemo(() => softwareList.filter((s) => s.status === 'installed'), [softwareList]);
-  const frequentlyUsedApps = useMemo(
-    () =>
-      installedApps
-        .filter((s) => (s.executionCount || 0) > 0)
-        .sort((a, b) => (b.executionCount || 0) - (a.executionCount || 0)),
-    [installedApps]
-  );
   const uninstalledApps = useMemo(() => softwareList.filter((s) => s.status === 'uninstalled'), [softwareList]);
   const blockedApps = useMemo(() => softwareList.filter((s) => s.isBlocked), [softwareList]);
 
-  // Tab Filtering
-  const displayedApps = useMemo(() => {
-    let list: DeviceSoftware[] = [];
-    if (activeTab === 'frequently_used') {
-      list = frequentlyUsedApps;
-    } else if (activeTab === 'installed') {
-      list = installedApps;
-    } else if (activeTab === 'uninstalled') {
-      list = uninstalledApps;
-    }
+  const usageApps = useMemo(() => {
+    const raw = usageData?.apps || [];
+    const q = search.trim().toLowerCase();
+    if (!q) return raw;
+    return raw.filter(
+      (a) =>
+        a.appName.toLowerCase().includes(q) ||
+        a.executable.toLowerCase().includes(q) ||
+        (a.publisher || '').toLowerCase().includes(q)
+    );
+  }, [usageData, search]);
 
+  const displayedInventory = useMemo(() => {
+    let list = activeTab === 'installed' ? installedApps : uninstalledApps;
     if (search.trim()) {
       const q = search.toLowerCase();
       list = list.filter(
@@ -157,25 +176,37 @@ export default function SoftwareManagementPage() {
       );
     }
     return list;
-  }, [activeTab, frequentlyUsedApps, installedApps, uninstalledApps, search]);
+  }, [activeTab, installedApps, uninstalledApps, search]);
 
-  const maxExecutions = frequentlyUsedApps.length > 0 ? frequentlyUsedApps[0].executionCount || 1 : 1;
+  const topUsedApp = usageData?.apps?.[0] || null;
+  const maxActiveSeconds = topUsedApp && topUsedApp.activeSeconds > 0 ? topUsedApp.activeSeconds : 1;
+  const todayStr = getLocalDateString(0);
+  const yesterdayStr = getLocalDateString(1);
+
+  const rangeLabel =
+    dateRange === '7d'
+      ? 'Last 7 Days'
+      : selectedDate === todayStr
+      ? 'Today'
+      : selectedDate === yesterdayStr
+      ? 'Yesterday'
+      : selectedDate;
 
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Workstation Software Inventory & Control"
-        description="Comprehensive desktop application tracking, execution frequency monitoring, uninstalled history, and 1-click application blocking."
-        action={
+        title="Workstation Software & Daily Screen Time"
+        description="Real-time active foreground application screen time, daily launch tracking, installed inventory, and 1-click blocking."
+        actions={
           <Button
             variant="secondary"
             size="sm"
             icon={<RefreshCw className={`h-4 w-4 ${softwareLoading ? 'animate-spin' : ''}`} />}
             onClick={() => {
-              if (selectedDevice) loadSoftware(selectedDevice.deviceId || selectedDevice.id);
+              if (selectedDevice) loadTelemetry(selectedDevice.deviceId || selectedDevice.id, selectedDate, dateRange);
             }}
           >
-            Refresh Inventory
+            Refresh Usage
           </Button>
         }
       />
@@ -203,7 +234,9 @@ export default function SoftwareManagementPage() {
                       </option>
                     ))}
                   {devices.filter((d) => d.status !== 'uninstalled').length === 0 && (
-                    <option value="" disabled>No active workstations found</option>
+                    <option value="" disabled>
+                      {loading ? 'Loading workstations...' : 'No active workstations found'}
+                    </option>
                   )}
                 </select>
               </div>
@@ -233,7 +266,7 @@ export default function SoftwareManagementPage() {
 
           <div className="flex items-center gap-2">
             <Badge variant="success" dot>
-              {installedApps.length} Apps Detected
+              {installedApps.length} Installed
             </Badge>
             {blockedApps.length > 0 && (
               <Badge variant="error" dot>
@@ -244,28 +277,34 @@ export default function SoftwareManagementPage() {
         </div>
       </Card>
 
-      {/* 4 Metric Cards */}
+      {/* 4 Daily Telemetry KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="p-4 border-theme-border bg-theme-surface shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-theme-muted">Total Installed Apps</span>
-            <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400">
-              <AppWindow className="h-4 w-4" />
+            <span className="text-xs font-semibold uppercase tracking-wider text-amber-500">Active Screen Time</span>
+            <div className="p-2 rounded-lg bg-amber-500/10 text-amber-500">
+              <Timer className="h-4 w-4" />
             </div>
           </div>
-          <div className="mt-2 text-2xl font-bold text-theme-heading font-mono">{installedApps.length}</div>
-          <p className="mt-1 text-xs text-theme-muted">Catalogued in Windows registry</p>
+          <div className="mt-2 text-2xl font-bold text-amber-500 font-mono">
+            {formatDuration(usageData?.totalActiveSeconds || 0)}
+          </div>
+          <p className="mt-1 text-xs text-theme-muted">Focused usage ({rangeLabel})</p>
         </Card>
 
         <Card className="p-4 border-theme-border bg-theme-surface shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-amber-500 font-bold">Frequently Used</span>
-            <div className="p-2 rounded-lg bg-amber-500/10 text-amber-500">
-              <Flame className="h-4 w-4" />
+            <span className="text-xs font-semibold uppercase tracking-wider text-theme-muted">Apps Used ({rangeLabel})</span>
+            <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-400">
+              <AppWindow className="h-4 w-4" />
             </div>
           </div>
-          <div className="mt-2 text-2xl font-bold text-amber-500 font-mono">{frequentlyUsedApps.length}</div>
-          <p className="mt-1 text-xs text-theme-muted">Apps with execution tracking</p>
+          <div className="mt-2 text-2xl font-bold text-theme-heading font-mono">
+            {usageData?.apps?.length || 0}
+          </div>
+          <p className="mt-1 text-xs text-theme-muted truncate">
+            {topUsedApp ? `Top: ${topUsedApp.appName} (${formatDuration(topUsedApp.activeSeconds)})` : 'No desktop sessions yet'}
+          </p>
         </Card>
 
         <Card className="p-4 border-theme-border bg-theme-surface shadow-sm">
@@ -281,19 +320,21 @@ export default function SoftwareManagementPage() {
 
         <Card className="p-4 border-theme-border bg-theme-surface shadow-sm">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-theme-muted">Uninstalled History</span>
+            <span className="text-xs font-semibold uppercase tracking-wider text-theme-muted">Idle / Away Time</span>
             <div className="p-2 rounded-lg bg-slate-500/10 text-slate-400">
-              <History className="h-4 w-4" />
+              <Clock className="h-4 w-4" />
             </div>
           </div>
-          <div className="mt-2 text-2xl font-bold text-slate-400 font-mono">{uninstalledApps.length}</div>
-          <p className="mt-1 text-xs text-theme-muted">Previously detected removals</p>
+          <div className="mt-2 text-2xl font-bold text-slate-400 font-mono">
+            {formatDuration(usageData?.totalIdleSeconds || 0)}
+          </div>
+          <p className="mt-1 text-xs text-theme-muted">Inactive &gt; 2m or Screen Locked</p>
         </Card>
       </div>
 
-      {/* Main Software Inventory Card */}
+      {/* Main Software Usage & Inventory Card */}
       <Card className="p-5 border-theme-border bg-theme-surface shadow-sm">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-4">
           {/* Navigation Tabs */}
           <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-xl bg-theme-surface-subtle border border-theme-border">
             <button
@@ -306,7 +347,7 @@ export default function SoftwareManagementPage() {
               }`}
             >
               <Flame className="h-3.5 w-3.5" />
-              Frequently Used ({frequentlyUsedApps.length})
+              Daily Screen Time ({usageData?.apps?.length || 0})
             </button>
             <button
               type="button"
@@ -335,60 +376,149 @@ export default function SoftwareManagementPage() {
           </div>
 
           {/* Search Filter */}
-          <div className="w-full md:w-72">
+          <div className="w-full lg:w-72">
             <SearchInput
               value={search}
               onChange={setSearch}
-              placeholder="Search software name, executable, vendor..."
+              placeholder="Search app name, .exe, vendor..."
             />
           </div>
         </div>
 
-        {/* Tab Specific Views */}
+        {/* Date Filter Bar for Daily Screen Time */}
+        {activeTab === 'frequently_used' && (
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-theme-border bg-theme-surface-subtle px-3.5 py-2.5">
+            <div className="flex flex-wrap items-center gap-2">
+              <Calendar className="h-4 w-4 text-theme-accent" />
+              <button
+                type="button"
+                onClick={() => {
+                  setDateRange('today');
+                  setSelectedDate(todayStr);
+                }}
+                className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition ${
+                  dateRange === 'today' && selectedDate === todayStr
+                    ? 'bg-theme-accent text-theme-accent-text'
+                    : 'border border-theme-border text-theme-muted hover:text-theme-heading'
+                }`}
+              >
+                Today
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setDateRange('today');
+                  setSelectedDate(yesterdayStr);
+                }}
+                className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition ${
+                  dateRange === 'today' && selectedDate === yesterdayStr
+                    ? 'bg-theme-accent text-theme-accent-text'
+                    : 'border border-theme-border text-theme-muted hover:text-theme-heading'
+                }`}
+              >
+                Yesterday
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setDateRange('7d');
+                  setSelectedDate(todayStr);
+                }}
+                className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition ${
+                  dateRange === '7d'
+                    ? 'bg-theme-accent text-theme-accent-text'
+                    : 'border border-theme-border text-theme-muted hover:text-theme-heading'
+                }`}
+              >
+                Last 7 Days
+              </button>
+              <input
+                type="date"
+                value={selectedDate}
+                max={todayStr}
+                onChange={(e) => {
+                  if (e.target.value) {
+                    setDateRange('today');
+                    setSelectedDate(e.target.value);
+                  }
+                }}
+                className="rounded-lg border border-theme-border bg-theme-surface px-2.5 py-1 text-xs text-theme-heading focus:border-theme-accent focus:outline-none"
+              />
+            </div>
+
+            <span className="text-[11px] font-mono text-theme-muted">
+              {usageData?.lastUpdatedAt
+                ? `Synced: ${formatShortTime(usageData.lastUpdatedAt)}`
+                : 'Awaiting session tracker sync'}
+            </span>
+          </div>
+        )}
+
+        {/* Tab 1: Real Daily Active Screen Time */}
         {activeTab === 'frequently_used' && (
           <div className="overflow-hidden rounded-xl border border-theme-border">
-            <DataTable
-              data={displayedApps}
-              keyExtractor={(app, idx) => app.id || `${app.name}-${app.version || ''}-${idx}`}
+            <DataTable<DailyAppUsageItem>
+              data={usageApps}
+              keyExtractor={(app, idx) => `${app.executable}-${idx}`}
               columns={[
                 {
-                  key: 'name',
+                  key: 'appName',
                   header: 'Application',
                   render: (app) => (
                     <div>
-                      <span className="font-bold text-sm text-theme-heading block">{app.name}</span>
-                      <span className="text-xs font-mono text-theme-muted">{app.executable || '—'}</span>
+                      <span className="font-bold text-sm text-theme-heading block">{app.appName}</span>
+                      <span className="text-xs font-mono text-theme-muted">{app.executable}</span>
                     </div>
                   ),
                 },
                 {
                   key: 'publisher',
-                  header: 'Publisher / Vendor',
+                  header: 'Publisher',
                   render: (app) => (
                     <span className="text-xs text-theme-muted">{app.publisher || 'Unknown'}</span>
                   ),
                 },
                 {
-                  key: 'executionCount',
-                  header: 'Usage Frequency',
+                  key: 'activeSeconds',
+                  header: 'Active Time Spent',
                   render: (app) => {
-                    const count = app.executionCount || 0;
-                    const pct = Math.min(100, Math.round((count / maxExecutions) * 100));
+                    const sec = app.activeSeconds || 0;
+                    const barPct = Math.min(100, Math.round((sec / maxActiveSeconds) * 100));
+                    const sharePct = app.percentage ?? 0;
                     return (
-                      <div className="w-48 space-y-1">
+                      <div className="w-52 space-y-1">
                         <div className="flex items-center justify-between text-xs font-mono">
-                          <span className="font-bold text-theme-heading">{count} launches</span>
-                          <span className="text-[10px] text-theme-muted">{pct}%</span>
+                          <span className="font-bold text-theme-heading">{formatDuration(sec)}</span>
+                          <span className="text-[10px] text-theme-muted">{sharePct}% of day</span>
                         </div>
                         <div className="h-1.5 w-full rounded-full bg-theme-border overflow-hidden">
                           <div
                             className="h-full rounded-full bg-gradient-to-r from-amber-500 to-rose-500"
-                            style={{ width: `${Math.max(8, pct)}%` }}
+                            style={{ width: `${sec > 0 ? Math.max(6, barPct) : 0}%` }}
                           />
                         </div>
                       </div>
                     );
                   },
+                },
+                {
+                  key: 'launchCount',
+                  header: 'Launches',
+                  render: (app) => (
+                    <span className="font-mono text-xs font-semibold text-theme-heading bg-theme-surface-subtle px-2 py-0.5 rounded border border-theme-border">
+                      {app.launchCount} {app.launchCount === 1 ? 'launch' : 'launches'}
+                    </span>
+                  ),
+                },
+                {
+                  key: 'window',
+                  header: 'Activity Window',
+                  render: (app) => (
+                    <div className="text-[11px] font-mono text-theme-muted">
+                      <div>First: {formatShortTime(app.firstUsedAt)}</div>
+                      <div>Last: {formatShortTime(app.lastUsedAt)}</div>
+                    </div>
+                  ),
                 },
                 {
                   key: 'status',
@@ -404,8 +534,7 @@ export default function SoftwareManagementPage() {
                   header: 'Action',
                   className: 'text-right',
                   render: (app) => {
-                    const exe = app.executable || `${app.name.toLowerCase().replace(/\s+/g, '')}.exe`;
-                    const isWorking = workingApp === exe;
+                    const isWorking = workingApp === app.executable;
                     return (
                       <div className="flex items-center justify-end">
                         {app.isBlocked ? (
@@ -414,7 +543,7 @@ export default function SoftwareManagementPage() {
                             size="sm"
                             icon={<CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />}
                             disabled={isWorking}
-                            onClick={() => handleUnblockApp(app)}
+                            onClick={() => handleUnblock(app.appName, app.executable)}
                           >
                             {isWorking ? 'Unblocking...' : 'Unblock'}
                           </Button>
@@ -424,7 +553,7 @@ export default function SoftwareManagementPage() {
                             size="sm"
                             icon={<Ban className="h-3.5 w-3.5" />}
                             disabled={isWorking}
-                            onClick={() => handleBlockApp(app)}
+                            onClick={() => handleBlock(app.appName, app.executable, app.publisher)}
                           >
                             {isWorking ? 'Blocking...' : 'Block App'}
                           </Button>
@@ -436,17 +565,18 @@ export default function SoftwareManagementPage() {
               ]}
               emptyMessage={
                 softwareLoading
-                  ? 'Analyzing workstation execution telemetry...'
-                  : 'No frequently used applications found.'
+                  ? 'Loading real-time application screen time...'
+                  : `No active desktop application usage recorded for ${rangeLabel}.`
               }
             />
           </div>
         )}
 
+        {/* Tab 2: Installed Applications */}
         {activeTab === 'installed' && (
           <div className="overflow-hidden rounded-xl border border-theme-border">
             <DataTable
-              data={displayedApps}
+              data={displayedInventory}
               keyExtractor={(app, idx) => app.id || `${app.name}-${app.version || ''}-${idx}`}
               columns={[
                 {
@@ -506,7 +636,7 @@ export default function SoftwareManagementPage() {
                             size="sm"
                             icon={<CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />}
                             disabled={isWorking}
-                            onClick={() => handleUnblockApp(app)}
+                            onClick={() => handleUnblock(app.name, exe)}
                           >
                             {isWorking ? 'Unblocking...' : 'Unblock'}
                           </Button>
@@ -516,7 +646,7 @@ export default function SoftwareManagementPage() {
                             size="sm"
                             icon={<Ban className="h-3.5 w-3.5" />}
                             disabled={isWorking}
-                            onClick={() => handleBlockApp(app)}
+                            onClick={() => handleBlock(app.name, exe, app.publisher)}
                           >
                             {isWorking ? 'Blocking...' : 'Block App'}
                           </Button>
@@ -535,10 +665,11 @@ export default function SoftwareManagementPage() {
           </div>
         )}
 
+        {/* Tab 3: Uninstalled History */}
         {activeTab === 'uninstalled' && (
           <div className="overflow-hidden rounded-xl border border-theme-border">
             <DataTable
-              data={displayedApps}
+              data={displayedInventory}
               keyExtractor={(app, idx) => app.id || `${app.name}-${app.version || ''}-${idx}`}
               columns={[
                 {
