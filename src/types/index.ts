@@ -59,6 +59,11 @@ export interface Device {
     country: string;
     countryCode: string;
     isp: string;
+    latitude?: number;
+    longitude?: number;
+    accuracyMeters?: number;
+    source?: string;
+    updatedAt?: string;
   };
   firewallStatus?: 'enabled' | 'partial' | 'disabled' | 'unknown';
   firewallEnabled?: boolean;

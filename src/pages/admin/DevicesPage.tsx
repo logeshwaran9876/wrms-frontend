@@ -971,7 +971,24 @@ function DeviceDetailsModal({
             </div>
 
             <div className="rounded-xl border border-theme-border bg-theme-surface p-4">
-              <h4 className="text-xs font-semibold uppercase tracking-wider text-theme-muted mb-3">Geo-Location & Network Provider</h4>
+              <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+                <h4 className="text-xs font-semibold uppercase tracking-wider text-theme-muted">Geo-Location & Network Provider</h4>
+                {device.location?.source && (
+                  <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold border ${
+                    (device.location.accuracyMeters ?? 99999) <= 5000
+                      ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                      : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                  }`}>
+                    {device.location.source}
+                    {device.location.accuracyMeters !== undefined && (
+                      <> · {device.location.accuracyMeters >= 1000
+                        ? `~${Math.round(device.location.accuracyMeters / 1000)} km`
+                        : `~${Math.round(device.location.accuracyMeters)} m`}
+                      </>
+                    )}
+                  </span>
+                )}
+              </div>
               <div className="grid grid-cols-2 gap-3 text-xs sm:grid-cols-4">
                 <div>
                   <span className="text-theme-muted">City / Region</span>
@@ -992,10 +1009,21 @@ function DeviceDetailsModal({
                   </p>
                 </div>
                 <div>
-                  <span className="text-theme-muted">MAC Address</span>
-                  <p className="font-mono text-xs text-theme-heading mt-0.5">
-                    {device.macAddress || '—'}
-                  </p>
+                  <span className="text-theme-muted">Coordinates / MAC</span>
+                  {device.location?.latitude !== undefined && device.location?.longitude !== undefined ? (
+                    <a
+                      href={`https://maps.google.com/?q=${device.location.latitude},${device.location.longitude}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-0.5 block font-mono text-xs text-cyan-400 hover:underline"
+                    >
+                      {device.location.latitude.toFixed(4)}, {device.location.longitude.toFixed(4)}
+                    </a>
+                  ) : (
+                    <p className="font-mono text-xs text-theme-heading mt-0.5">
+                      {device.macAddress || '—'}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
